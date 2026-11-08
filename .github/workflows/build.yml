@@ -1,0 +1,74 @@
+# Builds PocketTool for Windows and Linux.
+# - Runs whenever you push a version tag such as v1.1.0, and publishes a GitHub Release with the programs attached.
+# - You can also run it by hand: Actions tab > "Build PocketTool" > "Run workflow". The programs then appear
+#   under that run's "Artifacts".
+name: Build PocketTool
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build for ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: Windows
+            target: win
+          - os: ubuntu-latest
+            name: Linux
+            target: linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install building blocks
+        run: npm install --no-audit --no-fund
+
+      - name: Reuse AI models from earlier builds
+        uses: actions/cache@v4
+        with:
+          path: offline/hf
+          key: ai-models-${{ hashFiles('scripts/offline-manifest.json') }}
+
+      - name: Gather libraries, fonts and AI models
+        run: npm run fetch
+
+      - name: Check the offline files
+        run: npm test
+
+      - name: Build the program
+        run: npm run dist:${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PocketTool-${{ matrix.name }}
+          path: |
+            dist/*.exe
+            dist/*.AppImage
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
