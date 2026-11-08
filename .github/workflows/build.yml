@@ -64,6 +64,15 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Add the web version to the release
+        run: |
+          node scripts/stamp-version.mjs
+          mkdir -p release
+          cp app/index.html release/pockettool.html
       - uses: actions/download-artifact@v4
         with:
           path: release
