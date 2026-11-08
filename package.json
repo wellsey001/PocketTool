@@ -1,13 +1,16 @@
 {
   "name": "pockettool",
   "productName": "PocketTool",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Everyday file tools that run on your computer: images, PDFs and handy utilities, with nothing uploaded.",
   "main": "main.js",
-  "author": { "name": "PocketTool", "email": "wellsey001@gmail.com" },
-  "license": "Christopher Wells",
+  "author": {
+    "name": "PocketTool",
+    "email": "hello@example.com"
+  },
+  "license": "MIT",
   "private": true,
-  "homepage": "https://github.com/wellsey001/pockettool",
+  "homepage": "https://github.com/YOUR-USERNAME/pockettool",
   "scripts": {
     "fetch": "node scripts/fetch-offline.mjs",
     "fetch:lite": "node scripts/fetch-offline.mjs --no-models",
@@ -19,24 +22,45 @@
   },
   "devDependencies": {
     "electron": "33.2.1",
-    "electron-builder": "25.1.8",
-    "@huggingface/transformers": "3.5.1",
-    "@tensorflow/tfjs": "4.22.0",
-    "@upscalerjs/esrgan-slim": "1.0.0-beta.12",
-    "heic2any": "0.0.4",
-    "jszip": "3.10.1",
-    "pdf-lib": "1.17.1",
-    "pdfjs-dist": "3.11.174",
-    "upscaler": "1.0.0-beta.19"
+    "electron-builder": "25.1.8"
   },
   "build": {
     "appId": "com.pockettool.app",
     "productName": "PocketTool",
-    "files": ["main.js", "offline.js", "app/**/*", "package.json"],
-    "extraResources": [{ "from": "offline", "to": "offline", "filter": ["**/*"] }],
-    "directories": { "output": "dist", "buildResources": "build" },
+    "files": [
+      "main.js",
+      "offline.js",
+      "app/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "offline",
+        "to": "offline",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
     "win": {
-      "target": [{ "target": "nsis", "arch": ["x64"] }, { "target": "portable", "arch": ["x64"] }],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "build/icon.ico"
     },
     "nsis": {
@@ -48,14 +72,27 @@
       "shortcutName": "PocketTool",
       "artifactName": "PocketTool-Setup-${version}.exe"
     },
-    "portable": { "artifactName": "PocketTool-${version}-portable.exe" },
+    "portable": {
+      "artifactName": "PocketTool-${version}-portable.exe"
+    },
     "linux": {
-      "target": [{ "target": "AppImage", "arch": ["x64"] }],
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "build/icon.png",
       "category": "Utility",
       "synopsis": "Everyday file tools that run on your computer",
       "artifactName": "PocketTool-${version}.AppImage",
-      "desktop": { "Name": "PocketTool", "Comment": "Image, PDF and everyday file tools", "StartupWMClass": "PocketTool" }
+      "desktop": {
+        "Name": "PocketTool",
+        "Comment": "Image, PDF and everyday file tools",
+        "StartupWMClass": "PocketTool"
+      }
     }
   }
 }

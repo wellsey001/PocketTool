@@ -1,5 +1,11 @@
 # Changes
 
+## 1.1.1
+
+- Fixed: the AI upscaler in the desktop app said it couldn't download its model. The app now bundles the exact library versions the browser version uses, and only serves a bundled file for the exact version asked for.
+- The upscaler recognises its model however the model package presents it, and explains what it found if something's missing.
+- Builds no longer install the libraries through npm, which removes the npm version warning, and use Node.js 22.
+
 ## 1.1.0
 
 - New look: PocketTool logo, deep indigo sidebar with an icon for every tool, consistent tool headers, Instrument Sans typeface, and refined dark mode.

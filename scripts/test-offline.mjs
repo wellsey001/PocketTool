@@ -33,15 +33,17 @@ for (const [name, url] of Object.entries(required)) { const f = has(url); f ? ok
 
 // The upscaler tries several known locations for its model; at least one must be bundled
 const esr = ["1.0.0", "1.0.0-beta.12"].flatMap((v) => ["dist/umd/index.min.js", "dist/umd/models/esrgan-slim/src/umd.min.js", "dist/umd/2x.min.js"]
-  .map((p) => J + "@upscalerjs/esrgan-slim@" + v + "/" + p)).find(has);
-esr ? ok("AI upscaler model code  (" + path.relative(OUT, has(esr)) + ")") : bad("AI upscaler model code (@upscalerjs/esrgan-slim dist/umd)");
-const weights = fs.existsSync(path.join(OUT, "npm/@upscalerjs/esrgan-slim/models")) &&
-  fs.readdirSync(path.join(OUT, "npm/@upscalerjs/esrgan-slim/models"), { recursive: true }).some((f) => /model\.json$/.test(f));
-weights ? ok("AI upscaler model weights") : bad("AI upscaler model weights (@upscalerjs/esrgan-slim/models)");
+  .map((p) => J + "@upscalerjs/esrgan-slim@" + v + "/" + p)).filter(has);
+esr.length ? ok("AI upscaler model code: " + esr.map((u) => u.replace(J, "")).join(", ")) : bad("AI upscaler model code (@upscalerjs/esrgan-slim dist/umd)");
+const cdn = path.join(OUT, "cdn");
+const list = (d) => (fs.existsSync(d) ? fs.readdirSync(d, { recursive: true }).map(String) : []);
+const esrDirs = list(path.join(cdn, "@upscalerjs")).filter((d) => /^esrgan-slim@[^/\\]+$/.test(d));
+const weights = esrDirs.some((d) => list(path.join(cdn, "@upscalerjs", d)).some((f) => /model\.json$/.test(f)));
+weights ? ok("AI upscaler model weights") : bad("AI upscaler model weights (@upscalerjs/esrgan-slim models/)");
 
-const tdist = path.join(OUT, "npm/@huggingface/transformers/dist"), odist = path.join(OUT, "npm/onnxruntime-web/dist");
-const wasm = [tdist, odist].filter(fs.existsSync).flatMap((d) => fs.readdirSync(d)).filter((f) => f.endsWith(".wasm"));
-wasm.length ? ok("AI engine files: " + wasm.join(", ")) : bad("AI engine .wasm files (from @huggingface/transformers or onnxruntime-web)");
+const wasmDirs = list(cdn).filter((d) => /^(@huggingface[\\/]transformers|onnxruntime-web)@[^/\\]+$/.test(d));
+const wasm = wasmDirs.flatMap((d) => list(path.join(cdn, d)).filter((f) => f.endsWith(".wasm")).map((f) => path.basename(f)));
+wasm.length ? ok("AI engine files: " + [...new Set(wasm)].join(", ")) : bad("AI engine .wasm files (from @huggingface/transformers or onnxruntime-web)");
 
 console.log("Fonts");
 const html = fs.readFileSync(path.join(ROOT, "app/index.html"), "utf8");

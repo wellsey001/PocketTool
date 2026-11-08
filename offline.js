@@ -2,7 +2,8 @@
 // files bundled with the app, so everything works without the internet.
 //
 // The bundled files live in the "offline" folder, laid out like this:
-//   offline/npm/<package>/<file>          for cdn.jsdelivr.net/npm/... and unpkg.com/...
+//   offline/cdn/<package>@<version>/<file>  for cdn.jsdelivr.net/npm/... and unpkg.com/...
+//                                          (only the exact version asked for is used)
 //   offline/hf/<owner>/<model>/<file>     for huggingface.co/<owner>/<model>/resolve/<rev>/<file>
 //   offline/fonts/<hash>.css              for fonts.googleapis.com/css2?...
 //   offline/fonts/gstatic/<path>          for fonts.gstatic.com/<path>
@@ -23,27 +24,23 @@ function isFile(f) { try { return fs.statSync(f).isFile(); } catch { return fals
 
 // "pdf-lib@1.17.1/dist/pdf-lib.min.js" or "@scope/name@1.0.0/x.js" or "@scope/name@1.0.0"
 function parseNpm(rest) {
-  const m = rest.match(/^((?:@[^/@]+\/)?[^/@]+)(?:@[^/]*)?(?:\/(.*))?$/);
-  return m ? { pkg: m[1], file: m[2] || "" } : null;
+  const m = rest.match(/^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]*))?(?:\/(.*))?$/);
+  return m ? { pkg: m[1], version: m[2] || "", file: m[3] || "" } : null;
 }
 
 function npmFile(root, rest) {
   const p = parseNpm(rest);
-  if (!p) return null;
-  const dir = inside(path.join(root, "npm"), p.pkg);
+  if (!p || !p.version) return null;          // only exact, versioned addresses are served from the bundle
+  const dir = inside(path.join(root, "cdn"), p.pkg + "@" + p.version);
   if (!dir || !fs.existsSync(dir)) return null;
   let file = p.file;
   if (!file || file.endsWith("/")) {
-    // A bare package address: use the same default file jsDelivr would
-    try {
-      const pj = JSON.parse(fs.readFileSync(path.join(dir, "package.json"), "utf8"));
-      file = [pj.jsdelivr, pj.unpkg, typeof pj.browser === "string" ? pj.browser : null, pj.module, pj.main, "index.js"].find((x) => typeof x === "string" && x);
-    } catch { return null; }
+    // A bare package address: use the default file jsDelivr reported when the bundle was made
+    try { file = JSON.parse(fs.readFileSync(path.join(dir, ".pockettool.json"), "utf8")).default || ""; } catch { return null; }
+    if (!file) return null;
   }
-  const full = inside(dir, file.replace(/^\.\//, ""));
-  if (!full) return null;
-  for (const f of [full, full + ".js", full.replace(/\.js$/, ".min.js")]) if (isFile(f)) return f;
-  return null;
+  const full = inside(dir, file.replace(/^\.?\//, ""));
+  return full && isFile(full) ? full : null;
 }
 
 function resolve(root, href) {

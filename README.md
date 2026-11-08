@@ -52,8 +52,8 @@ Open `app/index.html` in Chrome or Edge. Everything works the same, except that 
 You need [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
-npm install          # the building blocks (a few minutes the first time)
-npm run fetch        # libraries, fonts and AI models, about 300 MB, into the offline folder
+npm install          # the desktop app tools (a few minutes the first time)
+npm run fetch        # the exact libraries, fonts and AI models, about 300 MB, into the offline folder
 npm test             # checks everything the app needs is there
 npm start            # try PocketTool
 npm run dist:win     # build the Windows programs into dist/   (on Windows)
@@ -82,7 +82,7 @@ app/index.html               the whole PocketTool interface and all its tools
 app/icon.png                 window icon
 main.js                      the desktop app: window, menus, offline file serving
 offline.js                   maps library, model and font addresses to bundled files
-scripts/fetch-offline.mjs    gathers everything into offline/ (run with npm run fetch)
+scripts/fetch-offline.mjs    downloads everything into offline/ (run with npm run fetch)
 scripts/offline-manifest.json  the list of libraries, models and fonts to bundle
 scripts/test-offline.mjs     checks the bundle is complete (npm test)
 build/                       program icons for Windows and Linux

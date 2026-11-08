@@ -1,15 +1,16 @@
 {
-  "_about": "Everything PocketTool needs to work without the internet. 'npm run fetch' copies the libraries from node_modules and downloads the models and fonts into the offline folder.",
-  "npm": [
-    { "package": "pdfjs-dist", "files": ["build/pdf.min.js", "build/pdf.worker.min.js"] },
-    { "package": "pdf-lib", "files": ["dist/pdf-lib.min.js"] },
-    { "package": "jszip", "files": ["dist/jszip.min.js"] },
-    { "package": "heic2any", "files": ["dist/heic2any.min.js"] },
-    { "package": "@tensorflow/tfjs", "files": ["dist/tf.min.js"] },
-    { "package": "upscaler", "files": ["dist/browser/umd/"] },
-    { "package": "@upscalerjs/esrgan-slim", "files": ["dist/umd/", "models/"] },
-    { "package": "@huggingface/transformers", "files": ["dist/"], "skip": ["\\.map$", "\\.node\\.", "\\.cjs$"] },
-    { "package": "onnxruntime-web", "files": ["dist/"], "only": ["\\.wasm$", "\\.mjs$", "^ort\\.[a-z.]*min\\.js$"], "optional": true }
+  "_about": "Everything PocketTool needs to work without the internet. 'npm run fetch' downloads these exact files, the same ones the browser version loads, into the offline folder.",
+  "cdn": [
+    { "package": "pdfjs-dist", "version": "3.11.174", "include": ["^/build/pdf\\.min\\.js$", "^/build/pdf\\.worker\\.min\\.js$"] },
+    { "package": "pdf-lib", "version": "1.17.1", "include": ["^/dist/pdf-lib\\.min\\.js$"] },
+    { "package": "jszip", "version": "3.10.1", "include": ["^/dist/jszip\\.min\\.js$"] },
+    { "package": "heic2any", "version": "0.0.4", "include": ["^/dist/heic2any\\.min\\.js$"] },
+    { "package": "@tensorflow/tfjs", "version": "4.22.0", "include": ["^/dist/tf\\.min\\.js$"] },
+    { "package": "upscaler", "version": "1.0.0-beta.19", "include": ["^/dist/browser/umd/"] },
+    { "package": "@upscalerjs/esrgan-slim", "version": "1.0.0", "include": ["^/dist/umd/", "^/models/"], "optional": true, "group": "upscaler-model" },
+    { "package": "@upscalerjs/esrgan-slim", "version": "1.0.0-beta.12", "include": ["^/dist/umd/", "^/models/"], "optional": true, "group": "upscaler-model" },
+    { "package": "@huggingface/transformers", "version": "3.5.1", "include": ["^/dist/"], "exclude": ["\\.map$", "\\.cjs$", "node", "\\.d\\.ts$"] },
+    { "package": "onnxruntime-web", "versionFrom": "@huggingface/transformers@3.5.1", "include": ["^/dist/[^/]+\\.(wasm|mjs)$"], "optional": true }
   ],
   "models": [
     { "repo": "briaai/RMBG-1.4", "about": "Remove background, Anything mode (free for non-commercial use)",

@@ -2,6 +2,7 @@
 // Fills the "offline" folder so PocketTool works without the internet.
 //
 //   npm run fetch                everything (about 300 MB with the AI models)
+//   Needs an internet connection. Nothing here needs "npm install" first.
 //   npm run fetch -- --no-models libraries and fonts only; AI models download on first use
 //   npm run fetch -- --force     download again even if files are already there
 
@@ -23,14 +24,6 @@ const mb = (n) => (n / 1048576).toFixed(1) + " MB";
 let problems = 0, total = 0;
 
 function log(s) { process.stdout.write(s + "\n"); }
-function walk(dir) {
-  const out = [];
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    const f = path.join(dir, e.name);
-    if (e.isDirectory()) out.push(...walk(f)); else out.push(f);
-  }
-  return out;
-}
 
 async function download(url, dest, { optional = false, headers = {} } = {}) {
   if (!FORCE && fs.existsSync(dest) && fs.statSync(dest).size > 0) { total += fs.statSync(dest).size; log("  already have " + path.relative(OUT, dest)); return true; }
@@ -54,35 +47,50 @@ async function download(url, dest, { optional = false, headers = {} } = {}) {
   }
 }
 
-// 1. Libraries, copied from node_modules (installed by "npm install")
-log("\nLibraries");
-for (const entry of manifest.npm) {
-  const src = path.join(ROOT, "node_modules", entry.package);
-  if (!fs.existsSync(src)) {
-    if (entry.optional) { log("  (not installed, skipped) " + entry.package); continue; }
-    log("  MISSING " + entry.package + ". Run \"npm install\" first."); problems++; continue;
+// 1. Libraries: the exact files the app loads, mirrored from jsDelivr at the exact versions it asks for
+async function getJSON(url) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try { const r = await fetch(url, { headers: { "user-agent": UA } }); if (r.status === 404) return null; if (!r.ok) throw new Error("HTTP " + r.status); return await r.json(); }
+    catch (e) { if (attempt === 3) throw e; await new Promise((res) => setTimeout(res, 1500 * attempt)); }
   }
-  const dest = path.join(OUT, "npm", entry.package);
-  fs.rmSync(dest, { recursive: true, force: true }); fs.mkdirSync(dest, { recursive: true });
-  fs.copyFileSync(path.join(src, "package.json"), path.join(dest, "package.json"));
-  const skip = (entry.skip || []).map((r) => new RegExp(r)), only = (entry.only || []).map((r) => new RegExp(r));
-  let n = 0, bytes = 0;
-  for (const f of entry.files) {
-    const from = path.join(src, f);
-    if (!fs.existsSync(from)) { log("  (not in this version) " + entry.package + "/" + f); continue; }
-    const list = fs.statSync(from).isDirectory() ? walk(from) : [from];
-    for (const file of list) {
-      const base = path.basename(file);
-      if (skip.some((r) => r.test(base))) continue;
-      if (only.length && !only.some((r) => r.test(base))) continue;
-      const to = path.join(dest, path.relative(src, file));
-      fs.mkdirSync(path.dirname(to), { recursive: true }); fs.copyFileSync(file, to);
-      n++; bytes += fs.statSync(file).size;
-    }
-  }
-  total += bytes;
-  log("  " + entry.package + "@" + JSON.parse(fs.readFileSync(path.join(src, "package.json"), "utf8")).version + ": " + n + " files, " + mb(bytes));
 }
+async function listFiles(pkg, version) {
+  const a = await getJSON("https://data.jsdelivr.com/v1/packages/npm/" + pkg + "@" + version + "?structure=flat");
+  if (a && a.files) return a;
+  return await getJSON("https://data.jsdelivr.com/v1/package/npm/" + pkg + "@" + version + "/flat");
+}
+async function versionFrom(spec, dep) {
+  const [, parent, ver] = spec.match(/^(.+)@([^@]+)$/);
+  const pj = await getJSON("https://cdn.jsdelivr.net/npm/" + parent + "@" + ver + "/package.json");
+  const range = pj && ((pj.dependencies || {})[dep] || (pj.peerDependencies || {})[dep]);
+  if (!range) return null;
+  if (/^\d+\.\d+\.\d+(-[\w.-]+)?$/.test(range)) return range;
+  const r = await getJSON("https://data.jsdelivr.com/v1/packages/npm/" + dep + "/resolved?specifier=" + encodeURIComponent(range));
+  return r && r.version;
+}
+log("\nLibraries");
+const groups = {};
+for (const entry of manifest.cdn) {
+  const pkg = entry.package;
+  let version = entry.version;
+  try {
+    if (!version && entry.versionFrom) version = await versionFrom(entry.versionFrom, pkg);
+    if (!version) { log("  (no version found, skipped) " + pkg); if (!entry.optional) problems++; continue; }
+    const listing = await listFiles(pkg, version);
+    if (!listing) { log("  (not published, skipped) " + pkg + "@" + version); if (!entry.optional) problems++; continue; }
+    const inc = (entry.include || []).map((r) => new RegExp(r)), exc = (entry.exclude || []).map((r) => new RegExp(r));
+    const files = listing.files.map((f) => f.name).filter((n) => inc.some((r) => r.test(n)) && !exc.some((r) => r.test(n)));
+    const dir = path.join(OUT, "cdn", pkg + "@" + version);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, ".pockettool.json"), JSON.stringify({ package: pkg, version, default: listing.default || null }));
+    let got = 0;
+    for (const name of files) if (await download("https://cdn.jsdelivr.net/npm/" + pkg + "@" + version + name, path.join(dir, name))) got++;
+    log("  " + pkg + "@" + version + ": " + got + " of " + files.length + " files");
+    if (entry.group && got) groups[entry.group] = true;
+    if (!files.length && !entry.optional) { log("  MISSING files for " + pkg + "@" + version); problems++; }
+  } catch (e) { log("  FAILED " + pkg + "@" + version + ": " + e.message); if (!entry.optional) problems++; }
+}
+for (const g of new Set(manifest.cdn.map((e) => e.group).filter(Boolean))) if (!groups[g]) { log("  MISSING: no version of " + g + " could be downloaded"); problems++; }
 
 // 2. Fonts used by the page
 log("\nFonts");

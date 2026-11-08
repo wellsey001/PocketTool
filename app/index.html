@@ -1729,15 +1729,32 @@
       })()
     }
   };
-  function findModel(scale) {
-    var w = window, k = scale + "x", n = "x" + scale;
-    if (w["ESRGANSlim" + k]) return w["ESRGANSlim" + k];
-    var all = w.ESRGANSlim;
-    if (all) {
-      if (all.default && typeof all.default === "object") all = all.default;
-      return all[n] || all[k] || null;
-    }
+  // Find the upscaler model for a scale, however the model package exposes it
+  function isModel(o, scale) {
+    return !!o && (typeof o === "object" || typeof o === "function") && o.scale === scale && !!(o.path || o.modelType || o._internals || o.setup);
+  }
+  function searchModel(o, scale, depth) {
+    if (!o || depth > 3 || (typeof o !== "object" && typeof o !== "function")) return null;
+    if (isModel(o, scale)) return o;
+    var keys = ["x" + scale, scale + "x", "default"], i, k;
+    for (i = 0; i < keys.length; i++) { k = o[keys[i]]; if (isModel(k, scale)) return k; }
+    for (i = 0; i < keys.length; i++) { var r = searchModel(o[keys[i]], scale, depth + 1); if (r) return r; }
+    try {
+      var names = Object.keys(o);
+      for (i = 0; i < names.length && i < 50; i++) { var r2 = searchModel(o[names[i]], scale, depth + 1); if (r2) return r2; }
+    } catch (e) {}
     return null;
+  }
+  function findModel(scale) {
+    var w = window;
+    if (w["ESRGANSlim" + scale + "x"]) return w["ESRGANSlim" + scale + "x"];
+    var names = Object.keys(w).filter(function (n) { return /esrgan/i.test(n); });
+    for (var i = 0; i < names.length; i++) { var m = searchModel(w[names[i]], scale, 0); if (m) return m; }
+    return null;
+  }
+  function modelDiagnosis() {
+    var names = Object.keys(window).filter(function (n) { return /esrgan/i.test(n); });
+    return names.length ? "found " + names.join(", ") + " but not the 2× and 4× models" : "the model files didn’t load";
   }
   function addScript(url) {
     return new Promise(function (res) {
@@ -1764,8 +1781,8 @@
     .then(function (ok) {
       if (!ok) failed.push("the AI model");
       if (failed.length) {
-        $("libStatus").textContent = "Couldn’t download " + failed.join(", ") +
-          ". Check your internet connection, and that a firewall or ad blocker isn’t blocking cdn.jsdelivr.net or unpkg.com, then reload this page.";
+        $("libStatus").textContent = "Couldn’t load " + failed.join(", ") + (failed.indexOf("the AI model") >= 0 ? " (" + modelDiagnosis() + ")" : "") +
+          ". Check your internet connection, and that a firewall or ad blocker isn’t blocking cdn.jsdelivr.net or unpkg.com, then reload. If it keeps happening, the AI upscaler can’t be used, but Standard and Sharp edges still work.";
         $("libStatus").className = "note err"; refreshUI(true);
       } else {
         ready = true; $("libStatus").textContent = ""; refreshUI(true);
