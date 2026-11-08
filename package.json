@@ -1,8 +1,8 @@
 {
   "name": "pockettool",
   "productName": "PocketTool",
-  "version": "1.1.1",
-  "description": "Everyday file tools that run on your computer: images, PDFs and handy utilities, with nothing uploaded.",
+  "version": "1.4.0",
+  "description": "Everyday file tools that run on your computer: images, PDFs, video, audio and handy utilities, with nothing uploaded.",
   "main": "main.js",
   "author": {
     "name": "PocketTool",
@@ -15,10 +15,11 @@
     "fetch": "node scripts/fetch-offline.mjs",
     "fetch:lite": "node scripts/fetch-offline.mjs --no-models",
     "start": "electron .",
-    "dist": "electron-builder --publish never",
-    "dist:win": "electron-builder --win --publish never",
-    "dist:linux": "electron-builder --linux --publish never",
-    "test": "node scripts/test-offline.mjs"
+    "dist": "node scripts/stamp-version.mjs && electron-builder --publish never",
+    "dist:win": "node scripts/stamp-version.mjs && electron-builder --win --publish never",
+    "dist:linux": "node scripts/stamp-version.mjs && electron-builder --linux --publish never",
+    "test": "node scripts/test-offline.mjs",
+    "stamp": "node scripts/stamp-version.mjs"
   },
   "devDependencies": {
     "electron": "33.2.1",
@@ -94,5 +95,6 @@
         "StartupWMClass": "PocketTool"
       }
     }
-  }
+  },
+  "repository": "YOUR-USERNAME/pockettool"
 }

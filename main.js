@@ -122,6 +122,11 @@ function buildMenu() {
           detail: "This frees about " + mb + " MB. The AI models and libraries bundled with PocketTool are not affected." });
         if (r.response === 0) { fs.rmSync(cacheDir, { recursive: true, force: true }); fs.mkdirSync(cacheDir, { recursive: true }); }
       } },
+      { label: "Check for updates…", click: () => {
+        const w = BrowserWindow.getAllWindows()[0];
+        if (w) w.webContents.executeJavaScript("window.PT && window.PT.checkUpdates && window.PT.checkUpdates(true)").catch(() => {});
+      } },
+      { type: "separator" },
       { label: "About PocketTool", click: () => dialog.showMessageBox({ message: "PocketTool " + app.getVersion(),
         detail: "Everyday file tools that run on your computer.\n" + (fs.existsSync(path.join(OFFLINE_DIR, "hf")) ? "AI models are included, so everything works offline." : "AI models download the first time you use them.") }) }
     ] }

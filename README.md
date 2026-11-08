@@ -2,7 +2,7 @@
 
 <h1 align="center">PocketTool</h1>
 
-<p align="center">Everyday file tools that run on your computer.<br>Resize and compress images, sign and organise PDFs, make QR codes and more, with nothing uploaded.</p>
+<p align="center">Everyday file tools that run on your computer.<br>Resize and compress images, sign and organise PDFs, trim and compress videos, make QR codes and more, with nothing uploaded.</p>
 
 <p align="center"><img src="docs/screenshots/home.png" alt="PocketTool home screen" width="860"></p>
 
@@ -10,16 +10,16 @@
 
 Drop any file on the home screen and PocketTool suggests what to do with it, or pick a tool from the sidebar.
 
-| Images | PDFs | Everyday utilities |
-| --- | --- | --- |
-| **Resize & upscale**, including AI upscaling to 2× or 4× | **Organise pages**: drag to reorder, rotate or remove | **QR code maker** for links, Wi-Fi, contacts and more |
-| **Batch resize** a whole folder at once | **Merge & split** PDFs | **Spreadsheet converter**: Excel, CSV, JSON, Markdown |
-| **Crop & rotate**, with straightening | **Sign & add text**: draw, type or upload a signature | **Password generator**, including passphrases |
-| **Remove background** with AI, then touch it up | **Fill in forms** | **Word counter** with post-length limits |
-| **Compress** to a target size, like "under 500 KB" | **Page numbers & watermarks** | **Date calculator** with UK bank holidays |
-| **Convert** between JPEG, PNG, WebP, HEIC and more | **Compress PDF** | |
-| **Icon maker** for favicons and app icons | **Images to PDF** and **PDF to images** | |
-| **Colour picker** with palettes and contrast checks | | |
+| Images | PDFs | Video & audio | Everyday utilities |
+| --- | --- | --- | --- |
+| **Resize & upscale**, including AI upscaling to 2× or 4× | **Organise pages**: drag to reorder, rotate or remove | **Trim** videos and audio, instantly or frame-exact | **QR code maker** for links, Wi-Fi, contacts and more |
+| **Batch resize** a whole folder at once | **Merge & split** PDFs | **Compress video** by quality or to a size like 25 MB | **Spreadsheet converter**: Excel, CSV, JSON, Markdown |
+| **Crop & rotate**, with straightening | **Sign & add text**: draw, type or upload a signature | **Convert** to MP4, WebM, MP3, M4A or WAV | **Password generator**, including passphrases |
+| **Remove background** with AI (BiRefNet), with edge clean-up and touch-up | **Fill in forms** | **Video to GIF** | **Word counter** with post-length limits |
+| **Compress** to a target size, like "under 500 KB" | **Page numbers & watermarks** | **Extract audio** from a video | **Date calculator** with UK bank holidays |
+| **Convert** between JPEG, PNG, WebP, HEIC and more | **Compress PDF** |  |  |
+| **Icon maker** for favicons and app icons | **Images to PDF** and **PDF to images** |  |  |
+| **Colour picker** with palettes and contrast checks |  |  |  |
 
 **Remove hidden data** strips location, camera details, author names and editing history from photos and PDFs before you share them, and shows you exactly what it removed.
 
@@ -32,7 +32,7 @@ Drop any file on the home screen and PocketTool suggests what to do with it, or 
 
 ## Private by design
 
-Everything happens on your computer. Your files are never uploaded, there are no accounts, and there's no tracking. The desktop app includes its AI models and libraries, so once it's installed it works without the internet. The only optional connection is to GOV.UK, to check for newly announced bank holidays.
+Everything happens on your computer. Your files are never uploaded, there are no accounts, and there's no tracking. The desktop app includes its AI models and libraries (which makes the installer about 1 GB), so once it's installed it works without the internet. The only optional connection is to GOV.UK, to check for newly announced bank holidays.
 
 ## Download
 
@@ -42,6 +42,10 @@ Get the latest version from the [Releases page](../../releases):
 - **Linux** (including Bazzite and Steam Deck): `PocketTool-x.y.z.AppImage`. Open it with [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) to add it to your app menu, or mark it as executable and double-click it.
 
 The first time you run it on Windows you may see "Windows protected your PC", because the app isn't digitally signed. Click **More info**, then **Run anyway**.
+
+## Updates
+
+Select **Check for updates** at the bottom of the sidebar (or **Help > Check for updates…** in the desktop app). PocketTool compares your version with the latest release on GitHub, shows what's new, and offers the right download for your computer. Your settings are kept when you install a new version. You can also switch on an automatic check once a day; it only asks GitHub for the latest version number.
 
 ## Use it in a web browser
 
@@ -53,7 +57,7 @@ You need [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
 npm install          # the desktop app tools (a few minutes the first time)
-npm run fetch        # the exact libraries, fonts and AI models, about 300 MB, into the offline folder
+npm run fetch        # the exact libraries, fonts, AI models and video engine, about 1.2 GB, into the offline folder
 npm test             # checks everything the app needs is there
 npm start            # try PocketTool
 npm run dist:win     # build the Windows programs into dist/   (on Windows)
@@ -94,4 +98,4 @@ docs/                        logo, screenshots and guides
 
 PocketTool is released under the [MIT licence](LICENSE).
 
-It's built on open-source libraries and models, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). **One of them matters if you plan to use PocketTool commercially:** the "Anything" mode of Remove background uses BRIA's RMBG-1.4 model, which is free for personal and non-commercial use only. For commercial use, use "People" mode (MODNet, Apache 2.0), remove RMBG-1.4 from `scripts/offline-manifest.json`, or get a licence from [BRIA AI](https://bria.ai).
+It's built on open-source libraries and models, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). **One matters if you plan to use PocketTool commercially:** the "Best quality" and "Standard" modes of Remove background use BiRefNet. Its model and code are MIT licensed, but it was trained partly on the DIS5K dataset, whose terms restrict commercial use. If that's a concern for you, use the "People, quick" mode (MODNet, Apache 2.0), or take legal advice.
