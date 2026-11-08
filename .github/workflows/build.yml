@@ -31,7 +31,7 @@ jobs:
           node-version: 20
 
       - name: Install building blocks
-          run: npm install --no-audit --no-fund --legacy-peer-deps
+        run: npm install --no-audit --no-fund --legacy-peer-deps
 
       - name: Reuse AI models from earlier builds
         uses: actions/cache@v4
