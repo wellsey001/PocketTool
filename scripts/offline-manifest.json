@@ -1,0 +1,24 @@
+{
+  "_about": "Everything PocketTool needs to work without the internet. 'npm run fetch' copies the libraries from node_modules and downloads the models and fonts into the offline folder.",
+  "npm": [
+    { "package": "pdfjs-dist", "files": ["build/pdf.min.js", "build/pdf.worker.min.js"] },
+    { "package": "pdf-lib", "files": ["dist/pdf-lib.min.js"] },
+    { "package": "jszip", "files": ["dist/jszip.min.js"] },
+    { "package": "heic2any", "files": ["dist/heic2any.min.js"] },
+    { "package": "@tensorflow/tfjs", "files": ["dist/tf.min.js"] },
+    { "package": "upscaler", "files": ["dist/browser/umd/"] },
+    { "package": "@upscalerjs/esrgan-slim", "files": ["dist/umd/", "models/"] },
+    { "package": "@huggingface/transformers", "files": ["dist/"], "skip": ["\\.map$", "\\.node\\.", "\\.cjs$"] },
+    { "package": "onnxruntime-web", "files": ["dist/"], "only": ["\\.wasm$", "\\.mjs$", "^ort\\.[a-z.]*min\\.js$"], "optional": true }
+  ],
+  "models": [
+    { "repo": "briaai/RMBG-1.4", "about": "Remove background, Anything mode (free for non-commercial use)",
+      "files": ["onnx/model.onnx", "onnx/model_quantized.onnx"], "optional": ["config.json", "preprocessor_config.json"] },
+    { "repo": "Xenova/modnet", "about": "Remove background, People mode (Apache 2.0)",
+      "files": ["onnx/model.onnx"], "optional": ["config.json", "preprocessor_config.json", "onnx/model_quantized.onnx"] }
+  ],
+  "fontsFrom": "app/index.html",
+  "snapshots": [
+    { "url": "https://www.gov.uk/bank-holidays.json", "to": "govuk/bank-holidays.json" }
+  ]
+}
