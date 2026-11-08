@@ -27,7 +27,11 @@ const required = {
   "HEIC photos": J + "heic2any@0.0.4/dist/heic2any.min.js",
   "AI upscaler engine": J + "@tensorflow/tfjs@4.22.0/dist/tf.min.js",
   "AI upscaler": J + "upscaler@1.0.0-beta.19/dist/browser/umd/upscaler.min.js",
-  "Background remover engine": J + "@huggingface/transformers@3.5.1"
+  "Background remover engine": J + "@huggingface/transformers@3.5.1",
+  "Video engine": J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js",
+  "Video engine worker": J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/814.ffmpeg.js",
+  "Video engine core": J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js",
+  "Video engine core (WebAssembly)": J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm"
 };
 for (const [name, url] of Object.entries(required)) { const f = has(url); f ? ok(name + "  (" + path.relative(OUT, f) + ")") : bad(name + "  " + url); }
 
@@ -51,9 +55,10 @@ const css = [...html.matchAll(/https:\/\/fonts\.googleapis\.com\/css2\?[^"'\s>]+
 for (const href of css) has(href) ? ok("font styles") : warn("fonts not bundled; PocketTool will use system fonts when offline");
 
 console.log("AI models");
-const models = { "Remove background, Anything (graphics card)": "https://huggingface.co/briaai/RMBG-1.4/resolve/main/onnx/model.onnx",
-  "Remove background, Anything (processor)": "https://huggingface.co/briaai/RMBG-1.4/resolve/main/onnx/model_quantized.onnx",
-  "Remove background, People": "https://huggingface.co/Xenova/modnet/resolve/main/onnx/model.onnx" };
+const models = { "Remove background, Best quality (graphics card)": "https://huggingface.co/wonfy/BiRefNet-ONNX-webgpu/resolve/041c6b25157431ac09634955246726ea2614fd0f/onnx/model_fp16.onnx",
+  "Remove background, Standard (graphics card)": "https://huggingface.co/wonfy/BiRefNet_lite-ONNX-webgpu/resolve/c40eaa22fb1af9edcf75c7b79d25ed8a8e901140/onnx/model_fp16.onnx",
+  "Remove background, Standard (processor)": "https://huggingface.co/wonfy/BiRefNet_lite-ONNX-webgpu/resolve/c40eaa22fb1af9edcf75c7b79d25ed8a8e901140/onnx/model.onnx",
+  "Remove background, People quick": "https://huggingface.co/Xenova/modnet/resolve/main/onnx/model.onnx" };
 if (!fs.existsSync(path.join(OUT, "hf"))) warn("AI models not bundled (lite build). They will download the first time they're used.");
 else for (const [name, url] of Object.entries(models)) {
   const f = has(url);

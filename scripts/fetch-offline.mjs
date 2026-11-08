@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Fills the "offline" folder so PocketTool works without the internet.
 //
-//   npm run fetch                everything (about 300 MB with the AI models)
+//   npm run fetch                everything (about 1.2 GB with the AI models)
 //   Needs an internet connection. Nothing here needs "npm install" first.
 //   npm run fetch -- --no-models libraries and fonts only; AI models download on first use
 //   npm run fetch -- --force     download again even if files are already there
@@ -111,8 +111,9 @@ log("\nAI models");
 if (NO_MODELS) log("  skipped (--no-models). They will download the first time each AI tool is used.");
 else for (const m of manifest.models) {
   log("  " + m.repo + ": " + m.about);
-  for (const f of m.files) await download("https://huggingface.co/" + m.repo + "/resolve/main/" + f, path.join(OUT, "hf", m.repo, f));
-  for (const f of m.optional || []) await download("https://huggingface.co/" + m.repo + "/resolve/main/" + f, path.join(OUT, "hf", m.repo, f), { optional: true });
+  const rev = m.revision || "main";      // pinned versions download exactly the files the app was tested with
+  for (const f of m.files) await download("https://huggingface.co/" + m.repo + "/resolve/" + rev + "/" + f, path.join(OUT, "hf", m.repo, f));
+  for (const f of m.optional || []) await download("https://huggingface.co/" + m.repo + "/resolve/" + rev + "/" + f, path.join(OUT, "hf", m.repo, f), { optional: true });
 }
 
 // 4. Snapshots used when offline
