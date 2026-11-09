@@ -2,32 +2,29 @@
 
 <h1 align="center">PocketTool</h1>
 
-<p align="center">Everyday file tools that run on your computer.<br>Resize and compress images, sign and organise PDFs, trim and compress videos, make QR codes and more, with nothing uploaded.</p>
+<p align="center">Everyday file tools that run on your computer: a family of five focused apps, with nothing uploaded.</p>
 
-<p align="center"><img src="docs/screenshots/home.png" alt="PocketTool home screen" width="860"></p>
+<p align="center"><img src="docs/screenshots/home.png" alt="The PocketTool launcher, with its five apps" width="860"></p>
 
-## What it does
+## The family
 
-Drop any file on the home screen and PocketTool suggests what to do with it, or pick a tool from the sidebar.
+**PocketTool** is the launcher. Open an app, or drop any file on it and PocketTool opens the right app for you.
 
-| Images | PDFs | Video & audio | Everyday utilities |
-| --- | --- | --- | --- |
-| **Resize & upscale**, including AI upscaling to 2× or 4× | **Organise pages**: drag to reorder, rotate or remove | **Trim** videos and audio, instantly or frame-exact | **QR code maker** for links, Wi-Fi, contacts and more |
-| **Batch resize** a whole folder at once | **Merge & split** PDFs | **Compress video** by quality or to a size like 25 MB | **Spreadsheet converter**: Excel, CSV, JSON, Markdown |
-| **Crop & rotate**, with straightening | **Sign & add text**: draw, type or upload a signature | **Convert** to MP4, WebM, MP3, M4A or WAV | **Password generator**, including passphrases |
-| **Remove background** with AI (BiRefNet), with edge clean-up and touch-up | **Fill in forms** | **Video to GIF** | **Word counter** with post-length limits |
-| **Compress** to a target size, like "under 500 KB" | **Page numbers & watermarks** | **Extract audio** from a video | **Date calculator** with UK bank holidays |
-| **Convert** between JPEG, PNG, WebP, HEIC and more | **Compress PDF** |  |  |
-| **Icon maker** for favicons and app icons | **Images to PDF** and **PDF to images** |  |  |
-| **Colour picker** with palettes and contrast checks |  |  |  |
+| App | For | Tools |
+| --- | --- | --- |
+| **Lens** | Images | Resize & upscale (including AI), batch resize, crop & rotate, remove background (AI), compress to a target size, convert (JPEG, PNG, WebP, HEIC and more), icon maker, colour picker |
+| **Folio** | PDFs | Organise pages, merge & split, sign & add text, fill in forms, page numbers & watermarks, compress, images to PDF, PDF to images |
+| **Reel** | Video & audio | Trim (instant or frame-exact), compress video (by quality or to a size like 25 MB), convert to MP4, WebM, MP3, M4A or WAV, video to GIF, extract audio |
+| **Kit** | Utilities | QR code maker, spreadsheet converter (Excel, CSV, JSON, Markdown), word counter, date calculator with UK bank holidays |
+| **Cloak** | Privacy | Remove hidden data (location, camera and author details) from photos and PDFs, password generator |
 
-**Remove hidden data** strips location, camera details, author names and editing history from photos and PDFs before you share them, and shows you exactly what it removed.
+Each app shows only its own tools, in its own colour. If you drop a file an app doesn't handle, such as a PDF in Lens, it offers to open it in the right app.
 
 <p align="center">
-  <img src="docs/screenshots/sign.png" alt="Sign and add text" width="420">
-  <img src="docs/screenshots/organise-dark.png" alt="Organise pages in dark mode" width="420">
-  <img src="docs/screenshots/compress.png" alt="Compress images" width="420">
-  <img src="docs/screenshots/qr-dark.png" alt="QR code maker in dark mode" width="420">
+  <img src="docs/screenshots/compress.png" alt="Lens, compressing an image" width="420">
+  <img src="docs/screenshots/sign.png" alt="Folio, signing a PDF" width="420">
+  <img src="docs/screenshots/organise-dark.png" alt="Folio in dark mode" width="420">
+  <img src="docs/screenshots/qr-dark.png" alt="Kit's QR code maker in dark mode" width="420">
 </p>
 
 ## Private by design
@@ -38,8 +35,10 @@ Everything happens on your computer. Your files are never uploaded, there are no
 
 Get the latest version from the [Releases page](../../releases):
 
-- **Windows**: `PocketTool-Setup-x.y.z.exe` installs it with Start menu and desktop shortcuts. `PocketTool-x.y.z-portable.exe` runs without installing.
-- **Linux** (including Bazzite and Steam Deck): `PocketTool-x.y.z.AppImage`. Open it with [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) to add it to your app menu, or mark it as executable and double-click it.
+- **Windows**: `PocketTool-Setup-x.y.z.exe` installs the whole family, with a desktop shortcut for PocketTool and a Start menu entry for each app (PocketTool Lens, PocketTool Folio and so on). Each app opens in its own window with its own taskbar icon. `PocketTool-x.y.z-portable.exe` runs without installing.
+- **Linux** (including Bazzite and Steam Deck): `PocketTool-x.y.z.AppImage`. Open it with [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) to add it to your app menu, or mark it as executable and double-click it. It opens the PocketTool launcher; to start straight in one app, run it with `--app=lens` (or `folio`, `reel`, `kit`, `cloak`).
+
+In the desktop app, the **Apps** menu (Ctrl+1 to Ctrl+6) opens any app, and opening an app that's already open brings its window to the front.
 
 The first time you run it on Windows you may see "Windows protected your PC", because the app isn't digitally signed. Click **More info**, then **Run anyway**.
 
@@ -49,7 +48,7 @@ Select **Check for updates** at the bottom of the sidebar (or **Help > Check for
 
 ## Use it in a web browser
 
-Open `app/index.html` in Chrome or Edge. Everything works the same, except that libraries and AI models are downloaded from the internet the first time each tool needs them.
+Open `app/index.html` in Chrome or Edge. Everything works the same, except that the apps switch in the same tab, and libraries and AI models are downloaded the first time each tool needs them. Add `?app=lens` (or another app's name) to the address to start in that app.
 
 ## Build it yourself
 
@@ -82,9 +81,13 @@ You can also start a build by hand from the **Actions** tab. See [docs/PUBLISHIN
 ## How the project is laid out
 
 ```
-app/index.html               the whole PocketTool interface and all its tools
+app/index.html               the launcher and all five apps (each app is a mode of the same page)
 app/icon.png                 window icon
-main.js                      the desktop app: window, menus, offline file serving
+main.js                      the desktop app: one window per app, menus, offline file serving
+preload.js                   lets an app window ask for another app's window, and hand it files
+app/icons/                   each app's window icon
+build/app-icons/             each app's Windows icon (for the Start menu and taskbar)
+build/installer.nsh          adds the Start menu entry for each app
 offline.js                   maps library, model and font addresses to bundled files
 scripts/fetch-offline.mjs    downloads everything into offline/ (run with npm run fetch)
 scripts/offline-manifest.json  the list of libraries, models and fonts to bundle

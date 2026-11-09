@@ -14,6 +14,8 @@ PocketTool uses the following open-source work. Each keeps its own licence. The 
 | [UpscalerJS](https://github.com/thekevinscott/UpscalerJS) 1.0.0-beta.19 | AI upscaling | MIT |
 | [Transformers.js](https://github.com/huggingface/transformers.js) 3.5.1 | Running the background remover | Apache 2.0 |
 | [ONNX Runtime Web](https://github.com/microsoft/onnxruntime) | AI engine used by Transformers.js | MIT |
+| [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm) 0.12.10 | Video and audio tools | MIT |
+| [@ffmpeg/core](https://github.com/ffmpegwasm/ffmpeg.wasm) 0.12.6, a WebAssembly build of [FFmpeg](https://ffmpeg.org) | The video engine | **GPL 2.0 or later**, because it includes x264. Its source code is available from the ffmpeg.wasm and FFmpeg projects. |
 | [Electron](https://www.electronjs.org) 33 | The desktop app | MIT; includes Chromium and other components under their own licences |
 
 ## AI models
@@ -21,8 +23,9 @@ PocketTool uses the following open-source work. Each keeps its own licence. The 
 | Model | Used for | Licence |
 | --- | --- | --- |
 | [ESRGAN Slim](https://github.com/thekevinscott/UpscalerJS/tree/main/models/esrgan-slim) 2× and 4× | Resize & upscale, AI method | MIT |
-| [BRIA RMBG-1.4](https://huggingface.co/briaai/RMBG-1.4) | Remove background, "Anything" mode | **BRIA RMBG-1.4 licence: free for non-commercial use only.** Commercial use needs an agreement with BRIA AI. |
-| [MODNet](https://github.com/ZHKKKe/MODNet), via [Xenova/modnet](https://huggingface.co/Xenova/modnet) | Remove background, "People" mode | Apache 2.0 |
+| [BiRefNet](https://github.com/ZhengPeng7/BiRefNet), versions rebuilt for graphics cards by [wonfy](https://huggingface.co/wonfy/BiRefNet-ONNX-webgpu) (pinned to commit 041c6b2) | Remove background, "Best quality" | MIT. **Note:** BiRefNet was trained partly on the DIS5K dataset, whose own terms restrict commercial use. The MIT licence covers the model and code, not the training data. |
+| [BiRefNet Lite](https://github.com/ZhengPeng7/BiRefNet), rebuilt by [wonfy](https://huggingface.co/wonfy/BiRefNet_lite-ONNX-webgpu) (pinned to commit c40eaa2) | Remove background, "Standard" | MIT, with the same DIS5K training-data note |
+| [MODNet](https://github.com/ZHKKKe/MODNet), via [Xenova/modnet](https://huggingface.co/Xenova/modnet) | Remove background, "People, quick" | Apache 2.0 |
 
 ## Fonts
 

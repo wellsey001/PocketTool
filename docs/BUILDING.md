@@ -6,7 +6,7 @@ These steps make the PocketTool programs on your own computer. If you only want 
 
 1. Install [Node.js](https://nodejs.org): download the version marked **LTS** and accept the default options.
 2. Download or clone this project, then double-click **build.bat**.
-3. Wait. The first build downloads the building blocks and about 300 MB of AI models, so it can take 10 to 20 minutes. Later builds are much quicker.
+3. Wait. The first build downloads the building blocks and about 1.2 GB of AI models and libraries, so it can take 20 to 30 minutes. Later builds are much quicker.
 4. When it finishes, the **dist** folder opens with:
    - **PocketTool-Setup-1.1.0.exe**, an installer that adds Start menu and desktop shortcuts.
    - **PocketTool-1.1.0-portable.exe**, which runs without installing.

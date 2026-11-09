@@ -1,7 +1,7 @@
 {
   "name": "pockettool",
   "productName": "PocketTool",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Everyday file tools that run on your computer: images, PDFs, video, audio and handy utilities, with nothing uploaded.",
   "main": "main.js",
   "author": {
@@ -31,6 +31,7 @@
     "files": [
       "main.js",
       "offline.js",
+      "preload.js",
       "app/**/*",
       "package.json"
     ],
@@ -40,6 +41,13 @@
         "to": "offline",
         "filter": [
           "**/*"
+        ]
+      },
+      {
+        "from": "build/app-icons",
+        "to": "icons",
+        "filter": [
+          "*.ico"
         ]
       }
     ],
@@ -71,7 +79,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "PocketTool",
-      "artifactName": "PocketTool-Setup-${version}.exe"
+      "artifactName": "PocketTool-Setup-${version}.exe",
+      "include": "build/installer.nsh"
     },
     "portable": {
       "artifactName": "PocketTool-${version}-portable.exe"

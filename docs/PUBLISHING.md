@@ -20,7 +20,7 @@ git init
 git add .
 git commit -m "PocketTool 1.1.0"
 git branch -M main
-git remote add origin https://github.com/wellsey001/pockettool.git
+git remote add origin https://github.com/YOUR-USERNAME/pockettool.git
 git push -u origin main
 ```
 
@@ -40,10 +40,14 @@ Releases put the programs on your repository's Releases page, where anyone can d
 2. Under **Choose a tag**, type `v1.1.0` and select **Create new tag**.
 3. Select **Publish release**. GitHub builds the programs and attaches them to the release within about 15 minutes.
 
-For later versions, raise the version in `package.json` first, then publish a release with the matching tag, such as `v1.1.1`.
+For later versions, publish a release with a new tag, such as `v1.4.1`. The build takes the version number from the tag, so everyone who uses "Check for updates" is told about it. (It's still tidy to raise the version in `package.json` too.)
+
+## Uploading new or changed files
+
+When a new version adds files, every one must reach GitHub, or the build fails with "Cannot find module". Uploading through the website only adds files to the folder you're in, so for new folders, drag in the folder itself. GitHub Desktop avoids this entirely: it uploads exactly what's in your folder, hidden files included.
 
 ## Tidy-ups before you publish
 
-- In `package.json`, change `homepage` to your repository's address and `author` to your name.
+- In `package.json`, change `homepage` to your repository's address, `repository` to your GitHub name and project (for example `jane-smith/pockettool`; this is only needed for builds made on your own computer, as GitHub fills it in automatically), and `author` to your name.
 - In `LICENSE`, put your name on the copyright line.
 - Check the RMBG-1.4 licence note in the README if PocketTool will be used commercially.

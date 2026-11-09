@@ -3,7 +3,7 @@
 // the bundled "offline" folder (see offline.js); anything not bundled is downloaded
 // once and kept in a local cache, so it also works offline afterwards.
 
-const { app, BrowserWindow, protocol, net, shell, Menu, dialog, nativeTheme } = require("electron");
+const { app, BrowserWindow, protocol, net, shell, Menu, dialog, nativeTheme, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
@@ -93,24 +93,63 @@ function folderSize(dir) {
   try { return fs.readdirSync(dir).reduce((n, f) => n + fs.statSync(path.join(dir, f)).size, 0); } catch { return 0; }
 }
 
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 1360, height: 920, minWidth: 720, minHeight: 560,
-    title: "PocketTool",
-    icon: path.join(__dirname, "app", "icon.png"),
+// ---------- the PocketTool family: one window per app ----------
+const APPS = { pockettool: "PocketTool", lens: "Lens", folio: "Folio", reel: "Reel", kit: "Kit", cloak: "Cloak" };
+const windows = {};
+
+function appFromArgs(argv) {
+  const arg = (argv || []).find((a) => /^--app=/.test(a));
+  const id = arg ? arg.slice(6).toLowerCase() : "pockettool";
+  return APPS[id] ? id : "pockettool";
+}
+function iconFile(id, ext) {
+  if (ext === "ico") return app.isPackaged ? path.join(process.resourcesPath, "icons", id + ".ico") : path.join(__dirname, "build", "app-icons", id + ".ico");
+  return path.join(__dirname, "app", "icons", id + ".png");
+}
+function openApp(id, message) {
+  if (!APPS[id]) id = "pockettool";
+  let win = windows[id];
+  if (win && !win.isDestroyed()) {               // already open: bring it forward
+    if (win.isMinimized()) win.restore();
+    win.focus();
+    if (message) win.webContents.send("files", message);
+    return win;
+  }
+  win = new BrowserWindow({
+    width: id === "pockettool" ? 1180 : 1360, height: id === "pockettool" ? 860 : 920, minWidth: 720, minHeight: 560,
+    title: APPS[id],
+    icon: iconFile(id, "png"),
     backgroundColor: nativeTheme.shouldUseDarkColors ? "#0F1424" : "#F3F4F8",
     autoHideMenuBar: true,
-    webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false }
+    webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, sandbox: true, nodeIntegration: false }
   });
-  win.loadURL("app://pockettool/index.html");
+  // On Windows, give each app its own taskbar button and icon
+  if (process.platform === "win32") {
+    try {
+      win.setAppDetails({ appId: id === "pockettool" ? "com.pockettool.app" : "com.pockettool." + id, appIconPath: iconFile(id, "ico"), appIconIndex: 0,
+        relaunchCommand: '"' + process.execPath + '" --app=' + id, relaunchDisplayName: APPS[id] });
+    } catch (e) { console.warn("setAppDetails:", e.message); }
+  }
+  win.loadURL("app://pockettool/index.html" + (id === "pockettool" ? "" : "?app=" + id));
+  if (message) win.webContents.once("did-finish-load", () => setTimeout(() => { if (!win.isDestroyed()) win.webContents.send("files", message); }, 300));
   // Links open in the normal web browser, not inside PocketTool.
   win.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: "deny" }; });
   win.webContents.on("will-navigate", (e, url) => { if (!url.startsWith("app://")) { e.preventDefault(); shell.openExternal(url); } });
+  windows[id] = win;
+  win.on("closed", () => { if (windows[id] === win) delete windows[id]; });
+  return win;
 }
+ipcMain.handle("open-app", (_event, id, files, tool) => {
+  if (!APPS[id]) return false;
+  const list = Array.isArray(files) ? files.filter((f) => f && typeof f.name === "string" && f.data) : [];
+  openApp(id, list.length || tool ? { files: list, tool: tool || null } : null);
+  return true;
+});
 
 function buildMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate([
-    { label: "File", submenu: [{ role: "quit", label: "Quit PocketTool" }] },
+    { label: "File", submenu: [{ role: "close", label: "Close window" }, { role: "quit", label: "Quit PocketTool" }] },
+    { label: "Apps", submenu: Object.keys(APPS).map((id, i) => ({ label: APPS[id], accelerator: "CmdOrCtrl+" + (i + 1), click: () => openApp(id) })) },
     { role: "editMenu" },
     { label: "View", submenu: [{ role: "reload" }, { type: "separator" }, { role: "resetZoom" }, { role: "zoomIn" }, { role: "zoomOut" },
       { type: "separator" }, { role: "togglefullscreen" }, { role: "toggleDevTools" }] },
@@ -123,7 +162,7 @@ function buildMenu() {
         if (r.response === 0) { fs.rmSync(cacheDir, { recursive: true, force: true }); fs.mkdirSync(cacheDir, { recursive: true }); }
       } },
       { label: "Check for updates…", click: () => {
-        const w = BrowserWindow.getAllWindows()[0];
+        const w = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
         if (w) w.webContents.executeJavaScript("window.PT && window.PT.checkUpdates && window.PT.checkUpdates(true)").catch(() => {});
       } },
       { type: "separator" },
@@ -134,7 +173,8 @@ function buildMenu() {
 }
 
 if (!app.requestSingleInstanceLock()) app.quit();
-app.on("second-instance", () => { const w = BrowserWindow.getAllWindows()[0]; if (w) { if (w.isMinimized()) w.restore(); w.focus(); } });
+// Opening PocketTool (or one of its apps) again uses the running copy
+app.on("second-instance", (_event, argv) => openApp(appFromArgs(argv)));
 
 app.whenReady().then(() => {
   cacheDir = path.join(app.getPath("userData"), "download-cache");
@@ -149,8 +189,8 @@ app.whenReady().then(() => {
   });
   protocol.handle("https", handleHttps);
   buildMenu();
-  createWindow();
-  app.on("activate", () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+  openApp(appFromArgs(process.argv));
+  app.on("activate", () => { if (BrowserWindow.getAllWindows().length === 0) openApp("pockettool"); });
 });
 
 app.on("window-all-closed", () => { if (process.platform !== "darwin") app.quit(); });

@@ -19,7 +19,7 @@ fi
 echo " Step 1 of 3: installing the building blocks..."
 npm install --no-audit --no-fund
 echo
-echo " Step 2 of 3: gathering libraries, fonts and AI models (about 300 MB the first time)..."
+echo " Step 2 of 3: gathering libraries, fonts and AI models (about 1.2 GB the first time)..."
 npm run fetch
 echo
 echo " Step 3 of 3: building PocketTool..."

@@ -1,5 +1,13 @@
 # Changes
 
+## 2.0.0
+
+- PocketTool is now a family: the PocketTool launcher and five focused apps, each with its own name, icon, colour and home screen: Lens (images), Folio (PDFs), Reel (video and audio), Kit (utilities) and Cloak (privacy).
+- Each app shows only its own tools. Dropping a file an app doesn't handle offers to open it in the right app; dropping a file on the launcher opens the right app straight away.
+- The Password generator has moved to Cloak.
+- Desktop: each app opens in its own window with its own taskbar icon; the Windows installer adds a Start menu entry for each app; the new Apps menu (Ctrl+1 to Ctrl+6) opens any app; files are handed to the right app's window.
+- Old links such as #compress still work and open the right app.
+
 ## 1.4.0
 
 - New "Check for updates" button, and Help > Check for updates… in the desktop app. It compares your version with the latest GitHub release, shows the release notes, and offers the right download: the installer on Windows, the AppImage on Linux, or the web version in a browser. An automatic daily check can be switched on.

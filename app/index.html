@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="pockettool-version" content="2.0.0">
+<meta name="pockettool-repo" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PocketTool</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2215%22%20fill%3D%22%232C3C9E%22/%3E%3Cg%20transform%3D%22translate%2824.5%2037%29%20rotate%28-15%29%22%3E%3Cpath%20d%3D%22M-2.2%206%20V-23%20H2.2%20V6%20Z%20M-2.2%20-23%20L-3.4%20-31%20H3.4%20L2.2%20-23%20Z%22%20fill%3D%22%23B9C5FF%22/%3E%3C/g%3E%3Cg%20transform%3D%22translate%2838%2037%29%20rotate%2813%29%22%3E%3Crect%20x%3D%22-5%22%20y%3D%22-16%22%20width%3D%2210%22%20height%3D%2222%22%20fill%3D%22%23E0A93E%22/%3E%3Cpath%20d%3D%22M-5%20-16%20H5%20L0%20-29%20Z%22%20fill%3D%22%23F7DEAE%22/%3E%3Cpath%20d%3D%22M-1.8%20-24.4%20H1.8%20L0%20-29%20Z%22%20fill%3D%22%2318203A%22/%3E%3C/g%3E%3Cpath%20d%3D%22M12.5%2024%20H51.5%20V39.5%20C51.5%2048.5%2043%2054%2032%2057%20C21%2054%2012.5%2048.5%2012.5%2039.5%20Z%22%20fill%3D%22%23FFFFFF%22/%3E%3C/svg%3E">
@@ -478,6 +480,69 @@
     .side { padding-top: 18px; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  .mdinfo { color: var(--muted); font-size: .88rem; }
+  .mdplayer { background: #000; border-radius: 16px; overflow: hidden; display: flex; justify-content: center; box-shadow: var(--shadow); }
+  .mdplayer video { display: block; width: 100%; max-height: 60vh; background: #000; }
+  .mdplayer audio { width: 100%; margin: 18px; }
+  .mdplayer .mdnoprev { color: #C3CAEC; padding: 40px 20px; margin: 0; text-align: center; }
+  .mdrange { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px 6px; margin-top: 14px; box-shadow: var(--shadow); }
+  .mdbar { position: relative; height: 8px; background: var(--sunk); border-radius: 99px; margin: 4px 0 6px; }
+  .mdbar div { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 99px; }
+  .mdrow { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; gap: 12px; align-items: end; }
+  .mdrow label.field { margin-top: 10px; }
+  .mdrow input[type=range] { margin-bottom: 12px; }
+  .mdrow .ghostbtn { margin-bottom: 2px; }
+  .mdtime { font-variant-numeric: tabular-nums; }
+  @media (max-width: 600px) { .mdrow { grid-template-columns: 1fr; gap: 4px; } .mdrow input[type=range] { margin: 6px 0; } }
+  .mdout { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; box-shadow: var(--shadow); }
+  .mdout video, .mdout img { display: block; max-width: 100%; max-height: 50vh; margin: 0 auto; border-radius: 10px; background: #000; }
+  .mdout audio { width: 100%; }
+  .sideupd { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 10px 0; font-size: .78rem; color: var(--side-dim); }
+  .updbtn { font: inherit; font-size: .78rem; background: none; border: 1px solid rgba(255,255,255,.18); color: var(--side-ink); border-radius: 8px; padding: 4px 9px; cursor: pointer; }
+  .updbtn:hover:not(:disabled) { border-color: var(--brass); color: #fff; }
+  .updbtn:disabled { opacity: .6; cursor: default; }
+  dialog.upd { border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px 18px; max-width: 520px; width: calc(100% - 32px); background: var(--surface); color: var(--ink); box-shadow: 0 20px 60px rgba(10,14,30,.35); }
+  dialog.upd::backdrop { background: rgba(10,14,30,.45); }
+  dialog.upd h2 { margin: 0 0 6px; font-size: 1.25rem; font-weight: 650; letter-spacing: -0.01em; }
+  dialog.upd p { margin: 0 0 12px; color: var(--muted); }
+  .updnotes { white-space: pre-wrap; font-size: .88rem; line-height: 1.5; background: var(--sunk); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; max-height: 220px; overflow: auto; margin-bottom: 14px; }
+  a.updgo { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0 18px; margin-top: 0; flex: 1; }
+  a.updlink { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0 16px; }
+  .updfoot { justify-content: flex-end; margin-top: 12px; }
+  /* ===== the PocketTool family ===== */
+  body.launcher .side, body.launcher .topbar, body.launcher .scrim { display: none !important; }
+  @media (min-width: 861px) { body.launcher .shell { grid-template-columns: minmax(0, 1fr); } }
+  /* full width, edge to edge, with its contents lined up with the page column */
+  .launchhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: -34px calc(50% - 50vw) 30px; padding: 14px calc(50vw - 50%); background: var(--side); color: #fff; }
+  body.launcher main { overflow-x: clip; }
+  @media (max-width: 860px) { .launchhead { margin-top: -18px; margin-bottom: 22px; padding-top: 12px; padding-bottom: 12px; } }
+  .lhbrand { display: flex; align-items: center; gap: 12px; }
+  .lhbrand svg { width: 40px; height: 40px; border-radius: 10px; }
+  .lhbrand b { display: block; font-size: 1.25rem; font-weight: 650; letter-spacing: -0.015em; }
+  .lhbrand span { display: block; font-size: .82rem; color: var(--side-ink); }
+  .lhside { display: flex; align-items: center; gap: 12px; font-size: .85rem; color: var(--side-ink); }
+  .lhside .ghostbtn { background: transparent; color: #fff; border-color: rgba(255,255,255,.3); min-height: 36px; font-size: .85rem; }
+  .lhside .ghostbtn:hover:not(:disabled) { background: rgba(255,255,255,.08); border-color: var(--brass); }
+  .appcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+  .appcard { display: flex; flex-direction: column; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+  .appcard .ah { display: flex; align-items: center; gap: 14px; }
+  .appcard .ah svg { width: 52px; height: 52px; border-radius: 13px; flex: none; }
+  .appcard .ah b { display: block; font-size: 1.2rem; font-weight: 650; letter-spacing: -0.01em; }
+  .appcard .ah span { display: block; font-size: .84rem; font-weight: 600; }
+  .appcard p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.45; flex: 1; }
+  .appcard .appopen { align-self: flex-start; font: inherit; font-weight: 600; font-size: .92rem; color: #fff; border: 0; border-radius: 10px; padding: 10px 16px; min-height: 44px; cursor: pointer; }
+  .appcard .appopen:hover { filter: brightness(.92); }
+  .card .ci.appci { background: none; padding: 0; }
+  .card .ci.appci svg { width: 38px; height: 38px; border-radius: 10px; }
+  .appswitch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 12px 8px 0; border-top: 1px solid rgba(255,255,255,.08); }
+  .appswitch .aslbl { width: 100%; font-size: .78rem; color: var(--side-dim); margin: 0 2px 2px; }
+  .appswitch button { width: 34px; height: 34px; padding: 0; border: 1px solid transparent; border-radius: 9px; background: none; cursor: pointer; }
+  .appswitch button:hover, .appswitch button:focus-visible { border-color: rgba(255,255,255,.35); }
+  .appswitch button[aria-current="true"] { border-color: var(--brass); }
+  .appswitch svg { width: 28px; height: 28px; border-radius: 7px; display: block; margin: auto; }
+  .appswitch .asall { font: inherit; font-size: .82rem; color: var(--side-ink); background: none; border: 0; cursor: pointer; padding: 6px 2px 0; text-decoration: underline; text-underline-offset: 3px; width: 100%; text-align: left; white-space: nowrap; }
+  .sideupd { flex-wrap: wrap; }
+  .updbtn { white-space: nowrap; }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -487,7 +552,7 @@
       <g transform="translate(38 34.5) rotate(13)"><rect x="-4" y="-17" width="8" height="23" fill="#E0A93E"/><rect x="1.2" y="-17" width="2.8" height="23" fill="#F0C064"/><path d="M-4 -17 H4 L0 -27.5 Z" fill="#F7DEAE"/><path d="M-1.35 -24 H1.35 L0 -27.5 Z" fill="#18203A"/></g>
       <path d="M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z" fill="#FFFFFF"/>
       <path d="M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z" fill="none" stroke="#2C3C9E" stroke-opacity=".34" stroke-width="1.6" stroke-dasharray="2.4 2.2" stroke-linecap="round"/>
-      <circle cx="18.6" cy="29" r="1.9" fill="#E0A93E"/><circle cx="45.4" cy="29" r="1.9" fill="#E0A93E"/></symbol><symbol id="pt-logo-s" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#2C3C9E"/><g transform="translate(24.5 37) rotate(-15)"><path d="M-2.2 6 V-23 H2.2 V6 Z M-2.2 -23 L-3.4 -31 H3.4 L2.2 -23 Z" fill="#B9C5FF"/></g><g transform="translate(38 37) rotate(13)"><rect x="-5" y="-16" width="10" height="22" fill="#E0A93E"/><path d="M-5 -16 H5 L0 -29 Z" fill="#F7DEAE"/><path d="M-1.8 -24.4 H1.8 L0 -29 Z" fill="#18203A"/></g><path d="M12.5 24 H51.5 V39.5 C51.5 48.5 43 54 32 57 C21 54 12.5 48.5 12.5 39.5 Z" fill="#FFFFFF"/></symbol></defs></svg>
+      <circle cx="18.6" cy="29" r="1.9" fill="#E0A93E"/><circle cx="45.4" cy="29" r="1.9" fill="#E0A93E"/></symbol><symbol id="pt-logo-lens" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0E7490"/><circle cx="32" cy="20" r="10.5" fill="#CFFAFE"/><circle cx="32" cy="20" r="5.5" fill="#155E75"/><circle cx="29.6" cy="17.6" r="1.7" fill="#FFFFFF"/><path d="M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z" fill="#FFFFFF"/><path d="M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z" fill="none" stroke="#0E7490" stroke-opacity=".4" stroke-width="1.6" stroke-dasharray="2.4 2.2" stroke-linecap="round"/><circle cx="18.6" cy="29" r="1.9" fill="#E0A93E"/><circle cx="45.4" cy="29" r="1.9" fill="#E0A93E"/></symbol><symbol id="pt-logo-folio" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#B4233C"/><g transform="rotate(-9 30 20)"><rect x="19" y="6" width="22" height="27" rx="2" fill="#FBD5DC"/></g><rect x="24" y="8" width="22" height="27" rx="2" fill="#FFF1F3"/><path d="M28 14 H42 M28 18.5 H42 M28 23 H37" stroke="#B4233C" stroke-width="1.8" stroke-linecap="round"/><path d="M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z" fill="#FFFFFF"/><path d="M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z" fill="none" stroke="#B4233C" stroke-opacity=".4" stroke-width="1.6" stroke-dasharray="2.4 2.2" stroke-linecap="round"/><circle cx="18.6" cy="29" r="1.9" fill="#E0A93E"/><circle cx="45.4" cy="29" r="1.9" fill="#E0A93E"/></symbol><symbol id="pt-logo-reel" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#6D28D9"/><circle cx="32" cy="20" r="11.5" fill="#EDE9FE"/><circle cx="32" cy="13.5" r="2.6" fill="#6D28D9"/><circle cx="25.5" cy="20" r="2.6" fill="#6D28D9"/><circle cx="38.5" cy="20" r="2.6" fill="#6D28D9"/><circle cx="32" cy="20" r="1.6" fill="#6D28D9"/><path d="M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z" fill="#FFFFFF"/><path d="M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z" fill="none" stroke="#6D28D9" stroke-opacity=".4" stroke-width="1.6" stroke-dasharray="2.4 2.2" stroke-linecap="round"/><circle cx="18.6" cy="29" r="1.9" fill="#E0A93E"/><circle cx="45.4" cy="29" r="1.9" fill="#E0A93E"/></symbol><symbol id="pt-logo-kit" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#B45309"/><g transform="rotate(-20 32 22)"><rect x="29.5" y="13" width="5" height="23" rx="2" fill="#FEF3C7"/><circle cx="32" cy="11.5" r="7.5" fill="#FEF3C7"/><rect x="30" y="2.5" width="4" height="8" fill="#B45309"/></g><path d="M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z" fill="#FFFFFF"/><path d="M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z" fill="none" stroke="#B45309" stroke-opacity=".4" stroke-width="1.6" stroke-dasharray="2.4 2.2" stroke-linecap="round"/><circle cx="18.6" cy="29" r="1.9" fill="#E0A93E"/><circle cx="45.4" cy="29" r="1.9" fill="#E0A93E"/></symbol><symbol id="pt-logo-cloak" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#15803D"/><path d="M24.5 27 V19.5 a7.5 7.5 0 0 1 15 0 V27" fill="none" stroke="#DCFCE7" stroke-width="4.2" stroke-linecap="round"/><path d="M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z" fill="#FFFFFF"/><path d="M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z" fill="none" stroke="#15803D" stroke-opacity=".4" stroke-width="1.6" stroke-dasharray="2.4 2.2" stroke-linecap="round"/><circle cx="18.6" cy="29" r="1.9" fill="#E0A93E"/><circle cx="45.4" cy="29" r="1.9" fill="#E0A93E"/><circle cx="32" cy="37" r="2.8" fill="#15803D"/><rect x="31" y="38" width="2" height="6" rx="1" fill="#15803D"/></symbol><symbol id="pt-logo-s" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#2C3C9E"/><g transform="translate(24.5 37) rotate(-15)"><path d="M-2.2 6 V-23 H2.2 V6 Z M-2.2 -23 L-3.4 -31 H3.4 L2.2 -23 Z" fill="#B9C5FF"/></g><g transform="translate(38 37) rotate(13)"><rect x="-5" y="-16" width="10" height="22" fill="#E0A93E"/><path d="M-5 -16 H5 L0 -29 Z" fill="#F7DEAE"/><path d="M-1.8 -24.4 H1.8 L0 -29 Z" fill="#18203A"/></g><path d="M12.5 24 H51.5 V39.5 C51.5 48.5 43 54 32 57 C21 54 12.5 48.5 12.5 39.5 Z" fill="#FFFFFF"/></symbol></defs></svg>
 <div class="shell">
   <aside class="side" id="side" aria-label="Tools">
     <a class="brand" href="#home" id="brandLink" aria-label="PocketTool home">
@@ -506,8 +571,27 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7.5 3v6c0 4.6-3.2 7.9-7.5 9-4.3-1.1-7.5-4.4-7.5-9V6z"/><path d="M8.8 12.2l2.2 2.2 4.3-4.4"/></svg>
       <span>Your files stay on this computer. Nothing is uploaded.</span>
     </div>
+    <div class="appswitch" id="appSwitch" aria-label="Switch app"></div>
+    <div class="sideupd">
+      <span id="updVersion">Version</span>
+      <button type="button" class="updbtn" id="updBtn">Check for updates</button>
+    </div>
   </aside>
   <div class="scrim" id="scrim" hidden></div>
+  <dialog class="upd" id="updDialog" aria-labelledby="updTitle">
+    <h2 id="updTitle">Updates</h2>
+    <p id="updMsg"></p>
+    <div class="updnotes" id="updNotes" hidden></div>
+    <div class="btns">
+      <a class="go updgo" id="updDownload" target="_blank" rel="noopener" hidden>Download</a>
+      <a class="ghostbtn updlink" id="updPage" target="_blank" rel="noopener" hidden>What’s new</a>
+    </div>
+    <label class="check"><input type="checkbox" id="updAuto"><span>Check automatically once a day<small>This asks GitHub for the latest version number. Nothing about you or your files is sent.</small></span></label>
+    <div class="btns updfoot">
+      <button type="button" class="linkbtn" id="updSkip" hidden>Skip this version</button>
+      <button type="button" class="ghostbtn" id="updClose">Close</button>
+    </div>
+  </dialog>
   <main id="main">
     <div class="topbar">
       <button type="button" class="ghostbtn menubtn" id="menuBtn" aria-controls="side" aria-expanded="false">Tools</button>
@@ -515,12 +599,16 @@
     </div>
 
   <section id="panel-home" aria-labelledby="h-home">
+    <div class="launchhead" id="launchHead" hidden>
+      <div class="lhbrand"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#pt-logo"/></svg><div><b>PocketTool</b><span>Everyday file tools</span></div></div>
+      <div class="lhside"><span id="launchVersion"></span><button type="button" class="ghostbtn" id="launchUpd">Check for updates</button></div>
+    </div>
     <h2 class="ptitle" id="h-home">What would you like to do?</h2>
-    <p class="sub">Drop a photo, PDF or spreadsheet and PocketTool will suggest what to do with it, or pick a tool below. Everything runs on your computer; nothing is uploaded.</p>
-    <input type="file" id="hfile" multiple accept="image/*,.heic,.heif,application/pdf,.pdf,.csv,.tsv,.xlsx,.xlsm,.json,.txt,.md" hidden>
+    <p class="sub">Drop a photo, PDF, video or spreadsheet and PocketTool will suggest what to do with it, or pick a tool below. Everything runs on your computer; nothing is uploaded.</p>
+    <input type="file" id="hfile" multiple accept="image/*,.heic,.heif,application/pdf,.pdf,.csv,.tsv,.xlsx,.xlsm,.json,.txt,.md,video/*,audio/*,.mkv,.mov,.avi,.m4a,.flac" hidden>
     <div class="drop hero" id="hdrop" role="button" tabindex="0">
-      <strong>Drop any image, PDF or spreadsheet here</strong>
-      <span>or click to choose files</span>
+      <strong>Drop any file here</strong>
+      <span>Images, PDFs, videos, audio and spreadsheets. Or click to choose files.</span>
     </div>
     <div id="hSuggest" hidden>
       <div class="listhead">
@@ -691,10 +779,11 @@
     <p class="sub">Remove the background from a photo with AI, then keep it transparent or put the subject on a new background. Touch up any mistakes with the brush. Runs entirely on your computer.</p>
     <div class="layout">
       <div class="panel">
-        <span class="lbl" id="bSubjLbl" style="margin-top:0">What’s in the photo?</span>
+        <span class="lbl" id="bSubjLbl" style="margin-top:0">AI model</span>
         <div class="seg" role="group" aria-labelledby="bSubjLbl">
-          <button type="button" data-subj="any" aria-pressed="true">Anything</button>
-          <button type="button" data-subj="people" aria-pressed="false">People</button>
+          <button type="button" data-subj="best" aria-pressed="false">Best quality</button>
+          <button type="button" data-subj="standard" aria-pressed="true">Standard</button>
+          <button type="button" data-subj="people" aria-pressed="false">People, quick</button>
         </div>
         <span class="hint" id="bSubjHint"></span>
 
@@ -709,6 +798,7 @@
             <button type="button" data-edge="crisp" aria-pressed="false">Crisp</button>
           </div>
           <span class="hint">Soft suits hair and fur; Crisp suits products and logos. Changing this clears touch-ups.</span>
+          <label class="check"><input type="checkbox" id="bClean" checked><span>Clean up edges<small>Makes the outline follow the real edges in your photo, and removes the halo of old background colour.</small></span></label>
 
           <span class="lbl" id="bBgLbl">New background</span>
           <div class="seg" role="group" aria-labelledby="bBgLbl">
@@ -774,7 +864,7 @@
             </div>
           </div>
         </div>
-        <p class="about">Anything mode uses BRIA’s RMBG-1.4 model, which is free for personal and non-commercial use. People mode uses MODNet (Apache 2.0 licence), which can also be used commercially. The first run downloads the model (about 45 to 180 MB, depending on your computer), so it can take a minute or two.</p>
+        <p class="about">Best quality and Standard use BiRefNet, and People, quick uses MODNet. The first time you use a model it downloads (120 to 520 MB) and is then kept on your computer; the desktop app includes them all. BiRefNet is MIT licensed, but it was trained partly on a dataset whose terms restrict commercial use, so check before using it in a business.</p>
       </div>
     </div>
   </section>
@@ -1675,6 +1765,135 @@
       </div>
       <div>
         <div class="dresult" id="dResult" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-media" aria-labelledby="h-media" hidden>
+    <h2 class="ptitle" id="h-media">Video &amp; audio</h2>
+    <p class="sub">Trim, convert and compress videos and audio, make GIFs, and pull the sound out of a video. Everything is processed on your computer.</p>
+    <div class="layout">
+      <div class="panel">
+        <span class="lbl" style="margin-top:0">What do you want to do?</span>
+        <div class="modes">
+          <button type="button" data-mmode="trim" aria-pressed="true"><b>Trim</b><small>Keep just the part you want</small></button>
+          <button type="button" data-mmode="convert" aria-pressed="false"><b>Convert</b><small>MP4, WebM, MP3, M4A or WAV</small></button>
+          <button type="button" data-mmode="compress" aria-pressed="false"><b>Compress video</b><small>Smaller files for email and sharing</small></button>
+          <button type="button" data-mmode="gif" aria-pressed="false"><b>Video to GIF</b><small>A short looping animation</small></button>
+          <button type="button" data-mmode="audio" aria-pressed="false"><b>Extract audio</b><small>Save the sound from a video</small></button>
+        </div>
+
+        <div class="mopt" data-for="trim">
+          <label class="field">How to cut
+            <select id="mdTrimMode">
+              <option value="fast">Fast, no quality loss</option>
+              <option value="exact">Exact to the frame (slower)</option>
+            </select>
+          </label>
+          <span class="hint" id="mdTrimHint"></span>
+        </div>
+        <div class="mopt" data-for="convert" hidden>
+          <label class="field">Convert to
+            <select id="mdConvTo">
+              <option value="mp4">MP4 video (plays almost everywhere)</option>
+              <option value="webm">WebM video (for websites)</option>
+              <option value="mp3">MP3 audio</option>
+              <option value="m4a">M4A audio (AAC)</option>
+              <option value="wav">WAV audio (uncompressed)</option>
+            </select>
+          </label>
+        </div>
+        <div class="mopt" data-for="compress" hidden>
+          <span class="lbl" id="mdGoalLbl">Compress by</span>
+          <div class="seg" role="group" aria-labelledby="mdGoalLbl">
+            <button type="button" data-mdgoal="quality" aria-pressed="true">Quality</button>
+            <button type="button" data-mdgoal="size" aria-pressed="false">Target size</button>
+          </div>
+          <label class="field" id="mdQWrap">Quality
+            <select id="mdQ">
+              <option value="high">High (larger file)</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="small">Small (lower quality)</option>
+            </select>
+          </label>
+          <label class="field" id="mdSizeWrap" hidden>Make it smaller than
+            <select id="mdSize">
+              <option value="8">8 MB (some chat apps)</option>
+              <option value="10">10 MB</option>
+              <option value="25" selected>25 MB (most email)</option>
+              <option value="50">50 MB</option>
+              <option value="100">100 MB</option>
+            </select>
+          </label>
+          <label class="field">Largest size
+            <select id="mdRes">
+              <option value="0">Keep the original size</option>
+              <option value="1080">Full HD (1080p)</option>
+              <option value="720" selected>HD (720p)</option>
+              <option value="480">Small (480p)</option>
+            </select>
+          </label>
+          <label class="check"><input type="checkbox" id="mdMute"><span>Remove the sound</span></label>
+        </div>
+        <div class="mopt" data-for="gif" hidden>
+          <div class="row" style="margin-top:0">
+            <label class="field">Width
+              <select id="mdGifW"><option value="320">320 px</option><option value="480" selected>480 px</option><option value="640">640 px</option><option value="800">800 px</option></select>
+            </label>
+            <label class="field">Smoothness
+              <select id="mdGifFps"><option value="8">8 frames a second</option><option value="12" selected>12 frames a second</option><option value="15">15 frames a second</option><option value="20">20 frames a second</option></select>
+            </label>
+          </div>
+          <label class="check"><input type="checkbox" id="mdGifLoop" checked><span>Loop forever</span></label>
+          <span class="hint">GIFs get large quickly. Keep them short: under 10 seconds works best.</span>
+        </div>
+        <div class="mopt" data-for="audio" hidden>
+          <label class="field">Save as
+            <select id="mdAudFmt">
+              <option value="mp3">MP3 (plays everywhere)</option>
+              <option value="m4a">M4A (AAC, higher quality)</option>
+              <option value="wav">WAV (uncompressed)</option>
+            </select>
+          </label>
+        </div>
+        <label class="check" id="mdUseRangeWrap"><input type="checkbox" id="mdUseRange"><span>Only use the selected part<small>Set the start and end under the preview.</small></span></label>
+
+        <button class="go" id="mdRun" type="button" disabled>Choose a video or audio file</button>
+        <div class="progress" id="mdProg" hidden><div id="mdProgFill"></div></div>
+        <div class="btns"><button class="ghostbtn" id="mdStop" type="button" hidden>Stop</button><button class="ghostbtn" id="mdAnother" type="button" hidden>Choose a different file</button></div>
+        <p class="note" id="mdNote" role="status"></p>
+      </div>
+
+      <div>
+        <input type="file" id="mdfile" accept="video/*,audio/*,.mkv,.mov,.avi,.m4a,.flac,.opus,.wmv,.3gp" hidden>
+        <div class="drop" id="mddrop" role="button" tabindex="0">
+          <strong>Choose a video or audio file</strong>
+          <span>MP4, MOV, WebM, MKV, AVI, MP3, M4A, WAV and more. Click to choose, or drop it here.</span>
+        </div>
+        <div id="mdView" hidden>
+          <div class="previewbar"><span id="mdName"></span><span class="mdinfo" id="mdInfo"></span></div>
+          <div class="mdplayer" id="mdPlayer"></div>
+          <div class="mdrange" id="mdRange">
+            <div class="mdbar" aria-hidden="true"><div id="mdSelBar"></div></div>
+            <div class="mdrow">
+              <label class="field">Start <input class="txt mdtime" id="mdStartT" value="0:00.0" inputmode="decimal"></label>
+              <input type="range" id="mdStart" min="0" max="1000" value="0" step="1" aria-label="Start">
+              <button class="ghostbtn" id="mdSetStart" type="button">Use current time</button>
+            </div>
+            <div class="mdrow">
+              <label class="field">End <input class="txt mdtime" id="mdEndT" value="0:00.0" inputmode="decimal"></label>
+              <input type="range" id="mdEnd" min="0" max="1000" value="1000" step="1" aria-label="End">
+              <button class="ghostbtn" id="mdSetEnd" type="button">Use current time</button>
+            </div>
+            <p class="hint" id="mdSel"></p>
+          </div>
+          <div id="mdResult" hidden>
+            <span class="lbl">Result</span>
+            <div class="mdout" id="mdOut"></div>
+            <div class="btns"><button class="go" id="mdSave" type="button" style="margin-top:0">Save</button></div>
+          </div>
+        </div>
+        <p class="about">The first time you use these tools, PocketTool downloads its video engine (about 31 MB). Long or high-resolution videos can take a while, because everything is done on your computer rather than in the cloud.</p>
       </div>
     </div>
   </section>
@@ -3726,25 +3945,33 @@
   var PT = window.PT;
   var J = "https://cdn.jsdelivr.net/npm/";
   var TJ_URLS = [J + "@huggingface/transformers@3.5.1", J + "@huggingface/transformers@3.0.2"];
+  // BiRefNet models rebuilt to run on graphics cards (WebGPU), pinned to exact, checked versions.
+  // ONNX model files are data, not programs, so a model file can't run anything on your computer.
+  var BIREF_PROC = { config: { do_normalize: true, do_pad: false, do_rescale: true, do_resize: true, image_mean: [0.485, 0.456, 0.406],
+    image_std: [0.229, 0.224, 0.225], feature_extractor_type: "ImageFeatureExtractor", resample: 2, rescale_factor: 1 / 255, size: { width: 1024, height: 1024 } } };
   var MODELS = {
-    any: {
-      id: "briaai/RMBG-1.4",
-      opts: function (dev) { return { config: { model_type: "custom" }, device: dev, dtype: dev === "webgpu" ? "fp32" : "q8" }; },
-      proc: { config: { do_normalize: true, do_pad: false, do_rescale: true, do_resize: true, image_mean: [0.5, 0.5, 0.5],
-              feature_extractor_type: "ImageFeatureExtractor", image_std: [1, 1, 1], resample: 2,
-              rescale_factor: 0.00392156862745098, size: { width: 1024, height: 1024 } } },
-      hint: "Best for products, pets, objects and people. Free for personal use."
+    best: {
+      kind: "biref", gpuOnly: true, id: "wonfy/BiRefNet-ONNX-webgpu", rev: "041c6b25157431ac09634955246726ea2614fd0f",
+      opts: function () { return { config: { model_type: "custom" }, device: "webgpu", dtype: "fp32", model_file_name: "model_fp16", revision: this.rev }; },
+      proc: BIREF_PROC,
+      hint: "The finest detail, especially hair, fur and see-through edges. Needs a graphics card. About 520 MB to download the first time."
+    },
+    standard: {
+      kind: "biref", id: "wonfy/BiRefNet_lite-ONNX-webgpu", rev: "c40eaa22fb1af9edcf75c7b79d25ed8a8e901140",
+      opts: function (dev) { var o = { config: { model_type: "custom" }, device: dev, dtype: "fp32", revision: this.rev }; if (dev === "webgpu") o.model_file_name = "model_fp16"; return o; },
+      proc: BIREF_PROC,
+      hint: "Excellent for products, pets and people. About 120 MB to download the first time (245 MB without a graphics card)."
     },
     people: {
-      id: "Xenova/modnet",
+      kind: "modnet", id: "Xenova/modnet",
       opts: function (dev) { return { device: dev, dtype: "fp32" }; },
       proc: {},
-      hint: "Made for portraits and people. Smaller download and fine for commercial use."
+      hint: "Small and quick, made for portraits. A good choice for slower computers."
     }
   };
   var tj = null, models = {}, noGPU = {};
-  var src = null, name = "image", aiMask = null, maskC = null, subjC = null, blurC = null;
-  var subj = "any", edge = "normal", bg = "none", touch = "off", showOrig = false, busy = false, doneSubj = null;
+  var src = null, name = "image", aiMask = null, rawMask = null, subjSrc = null, maskC = null, subjC = null, blurC = null;
+  var subj = "standard", edge = "normal", bg = "none", touch = "off", showOrig = false, busy = false, doneSubj = null;
   var undo = [], painting = false, last = null, raf = 0;
 
   function note(msg, err) { $("bNote").textContent = msg; $("bNote").className = "note" + (err ? " err" : ""); }
@@ -3787,14 +4014,15 @@
     }
     models[key] = Promise.all([loadTJ(), gpuUsable()]).then(function (r) {
       var T = r[0], gpu = r[1] && !noGPU[key];
-      var m = MODELS[key], devs = gpu ? ["webgpu", "wasm"] : ["wasm"];
+      var m = MODELS[key], devs = gpu ? (m.gpuOnly ? ["webgpu"] : ["webgpu", "wasm"]) : ["wasm"];
+      if (m.gpuOnly && !gpu) throw new Error("NEEDS_GPU");
       if (!gpu && T.env && T.env.backends && T.env.backends.onnx && T.env.backends.onnx.wasm) {
         T.env.backends.onnx.wasm.proxy = false;
       }
       function tryDev(k) {
         var dev = devs[k], o = m.opts(dev); o.progress_callback = prog;
         return T.AutoModel.from_pretrained(m.id, o).then(function (model) {
-          var po = JSON.parse(JSON.stringify(m.proc)); po.progress_callback = prog;
+          var po = JSON.parse(JSON.stringify(m.proc)); po.progress_callback = prog; if (m.rev) po.revision = m.rev;
           return T.AutoProcessor.from_pretrained(m.id, po).then(function (processor) { return { T: T, model: model, processor: processor, device: dev }; });
         }).catch(function (e) {
           if (k + 1 < devs.length) { console.warn("Falling back from " + dev, e); return tryDev(k + 1); }
@@ -3805,24 +4033,161 @@
     }).catch(function (e) { delete models[key]; throw e; });
     return models[key];
   }
-  function segment(m, canvas) {
+  // ===== Edge clean-up for cutouts =====
+  // 1. A guided filter (He, Sun and Tang) makes the cutout's edge follow the real edges in the photo.
+  // 2. Colour clean-up re-estimates the subject's colour at the edges, removing the halo of old background.
+  var EDGE = (function () {
+    function box(src, w, h, r) {           // average over a (2r+1) square, edges clamped; runs in time independent of r
+      var tmp = new Float32Array(w * h), out = new Float32Array(w * h), n = 2 * r + 1, x, y, acc, i;
+      for (y = 0; y < h; y++) {
+        var row = y * w; acc = 0;
+        for (i = -r; i <= r; i++) acc += src[row + Math.min(w - 1, Math.max(0, i))];
+        for (x = 0; x < w; x++) {
+          tmp[row + x] = acc / n;
+          acc += src[row + Math.min(w - 1, x + r + 1)] - src[row + Math.max(0, x - r)];
+        }
+      }
+      for (x = 0; x < w; x++) {
+        acc = 0;
+        for (i = -r; i <= r; i++) acc += tmp[Math.min(h - 1, Math.max(0, i)) * w + x];
+        for (y = 0; y < h; y++) {
+          out[y * w + x] = acc / n;
+          acc += tmp[Math.min(h - 1, y + r + 1) * w + x] - tmp[Math.max(0, y - r) * w + x];
+        }
+      }
+      return out;
+    }
+    function guided(I, p, w, h, r, eps) {
+      var N = w * h, Ip = new Float32Array(N), II = new Float32Array(N), i;
+      for (i = 0; i < N; i++) { Ip[i] = I[i] * p[i]; II[i] = I[i] * I[i]; }
+      var mI = box(I, w, h, r), mP = box(p, w, h, r), mIp = box(Ip, w, h, r), mII = box(II, w, h, r);
+      var a = new Float32Array(N), b = new Float32Array(N);
+      for (i = 0; i < N; i++) { var v = mII[i] - mI[i] * mI[i], c = mIp[i] - mI[i] * mP[i]; a[i] = c / (v + eps); b[i] = mP[i] - a[i] * mI[i]; }
+      var mA = box(a, w, h, r), mB = box(b, w, h, r), q = new Float32Array(N);
+      for (i = 0; i < N; i++) q[i] = mA[i] * I[i] + mB[i];
+      return q;
+    }
+    function guidedColour(R, G, B, p, w, h, r, eps) {
+      var N = w * h, i, bx = function (a) { return box(a, w, h, r); };
+      function mul(a, b) { var o = new Float32Array(N); for (var k = 0; k < N; k++) o[k] = a[k] * b[k]; return o; }
+      var mR = bx(R), mG = bx(G), mB = bx(B), mP = bx(p);
+      var mRp = bx(mul(R, p)), mGp = bx(mul(G, p)), mBp = bx(mul(B, p));
+      var vRR = bx(mul(R, R)), vRG = bx(mul(R, G)), vRB = bx(mul(R, B)), vGG = bx(mul(G, G)), vGB = bx(mul(G, B)), vBB = bx(mul(B, B));
+      var aR = new Float32Array(N), aG = new Float32Array(N), aB = new Float32Array(N), b = new Float32Array(N);
+      for (i = 0; i < N; i++) {
+        var rr = vRR[i] - mR[i] * mR[i] + eps, rg = vRG[i] - mR[i] * mG[i], rb = vRB[i] - mR[i] * mB[i],
+            gg = vGG[i] - mG[i] * mG[i] + eps, gb = vGB[i] - mG[i] * mB[i], bb = vBB[i] - mB[i] * mB[i] + eps;
+        var cR = mRp[i] - mR[i] * mP[i], cG = mGp[i] - mG[i] * mP[i], cB = mBp[i] - mB[i] * mP[i];
+        // solve the 3x3 system (covariance + eps) * a = cov(I, p) by the inverse
+        var i00 = gg * bb - gb * gb, i01 = gb * rb - rg * bb, i02 = rg * gb - gg * rb, i11 = rr * bb - rb * rb, i12 = rb * rg - rr * gb, i22 = rr * gg - rg * rg;
+        var det = rr * i00 + rg * i01 + rb * i02;
+        var x = (i00 * cR + i01 * cG + i02 * cB) / det, y = (i01 * cR + i11 * cG + i12 * cB) / det, z = (i02 * cR + i12 * cG + i22 * cB) / det;
+        aR[i] = x; aG[i] = y; aB[i] = z; b[i] = mP[i] - x * mR[i] - y * mG[i] - z * mB[i];
+      }
+      var mAR = bx(aR), mAG = bx(aG), mAB = bx(aB), mBb = bx(b), q = new Float32Array(N);
+      for (i = 0; i < N; i++) q[i] = mAR[i] * R[i] + mAG[i] * G[i] + mAB[i] * B[i] + mBb[i];
+      return q;
+    }
+    // rgba: the photo (Uint8ClampedArray, w*h*4); mask: the AI's cutout (Uint8, w*h)
+    function refine(rgba, mask, w, h, o) {
+      o = o || {};
+      // f: how much the AI's cutout was enlarged to reach this size (BiRefNet works at 1024 px)
+      var f = o.f || Math.max(1, Math.max(w, h) / 1024);
+      var N = w * h, r = o.r || Math.max(3, Math.round(2.5 * f)), eps = o.eps || 3e-4, passes = o.passes || 2, i;
+      var p = new Float32Array(N), R = new Float32Array(N), G = new Float32Array(N), B = new Float32Array(N);
+      for (i = 0; i < N; i++) { p[i] = mask[i] / 255; R[i] = rgba[i * 4] / 255; G[i] = rgba[i * 4 + 1] / 255; B[i] = rgba[i * 4 + 2] / 255; }
+      // Only refine a narrow band where the AI was unsure, so the rest of the picture can't pick up speckles
+      var unsure = new Float32Array(N); for (i = 0; i < N; i++) unsure[i] = p[i] > 0.02 && p[i] < 0.98 ? 1 : 0;
+      var near = box(unsure, w, h, r), band = new Uint8Array(N);
+      for (i = 0; i < N; i++) band[i] = near[i] > 0 ? 1 : 0;
+      var q = p;
+      for (var k = 0; k < passes; k++) { q = guidedColour(R, G, B, q, w, h, r, eps); for (i = 0; i < N; i++) q[i] = q[i] < 0 ? 0 : q[i] > 1 ? 1 : q[i]; }
+      var alpha = new Uint8ClampedArray(N);
+      for (i = 0; i < N; i++) {
+        var v = band[i] ? q[i] : p[i];
+        if (band[i]) { if (p[i] > 0.985 && v > 0.8) v = 1; else if (p[i] < 0.015 && v < 0.2) v = 0; }   // keep confident areas solid
+        alpha[i] = v <= 0 ? 0 : v >= 1 ? 255 : Math.round(v * 255);
+      }
+      // colour clean-up: average of nearby confident subject colours, weighted by alpha squared
+      var rd = Math.max(3, r * 2), w2 = new Float32Array(N), ch = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
+      for (i = 0; i < N; i++) { var aa = alpha[i] / 255; aa *= aa; w2[i] = aa; ch[0][i] = rgba[i * 4] * aa; ch[1][i] = rgba[i * 4 + 1] * aa; ch[2][i] = rgba[i * 4 + 2] * aa; }
+      var bw = box(w2, w, h, rd), bc = ch.map(function (c) { return box(c, w, h, rd); });
+      var out = new Uint8ClampedArray(N * 4);
+      for (i = 0; i < N; i++) {
+        var j = i * 4, al = alpha[i];
+        if (al < 250 && al > 0 && bw[i] > 1e-4) {
+          var t = al / 255, f0 = bc[0][i] / bw[i], f1 = bc[1][i] / bw[i], f2 = bc[2][i] / bw[i];
+          var k = Math.min(1, (1 - t) * 1.6);         // the more see-through, the more the colour is replaced
+          out[j] = rgba[j] * (1 - k) + f0 * k; out[j + 1] = rgba[j + 1] * (1 - k) + f1 * k; out[j + 2] = rgba[j + 2] * (1 - k) + f2 * k;
+        } else { out[j] = rgba[j]; out[j + 1] = rgba[j + 1]; out[j + 2] = rgba[j + 2]; }
+        out[j + 3] = 255;
+      }
+      return { alpha: alpha, rgb: out };
+    }
+    return { refine: refine, box: box, guided: guided, guidedColour: guidedColour };
+  })();
+
+  function segment(m, canvas, kind) {
     var T = m.T, w = canvas.width, h = canvas.height, k = Math.min(1, 1024 / Math.max(w, h));
-    var sm = document.createElement("canvas"); sm.width = Math.round(w * k); sm.height = Math.round(h * k);
+    var sm = document.createElement("canvas"); sm.width = Math.max(1, Math.round(w * k)); sm.height = Math.max(1, Math.round(h * k));
     var sx = sm.getContext("2d"); sx.imageSmoothingQuality = "high"; sx.drawImage(canvas, 0, 0, sm.width, sm.height);
     var d = sx.getImageData(0, 0, sm.width, sm.height).data;
     var img = new T.RawImage(new Uint8ClampedArray(d), sm.width, sm.height, 4).rgb();
     return Promise.resolve(m.processor(img)).then(function (r) {
-      return m.model({ input: r.pixel_values });
+      return kind === "biref" ? m.model({ input_image: r.pixel_values }) : m.model({ input: r.pixel_values });
     }).then(function (out) {
-      var t = out.output || out[Object.keys(out)[0]];
-      return T.RawImage.fromTensor(t[0].mul(255).to("uint8")).resize(w, h);
-    }).then(function (mask) {
-      var md = mask.data, ch = mask.channels || 1, a = new Uint8ClampedArray(w * h);
-      for (var i = 0; i < w * h; i++) a[i] = md[i * ch];
+      var t = kind === "biref" ? (out.output_image || out[Object.keys(out)[0]]) : (out.output || out[Object.keys(out)[0]]);
+      var dims = t.dims, mh = dims[dims.length - 2], mw = dims[dims.length - 1], data = t.data, N = mw * mh;
+      // the model's answer at its own size, as an alpha mask (BiRefNet gives logits, MODNet gives 0 to 1)
+      var small = new ImageData(mw, mh), sd = small.data;
+      for (var i = 0; i < N; i++) {
+        var v = kind === "biref" ? 1 / (1 + Math.exp(-data[i])) : data[i];
+        sd[i * 4] = sd[i * 4 + 1] = sd[i * 4 + 2] = 255; sd[i * 4 + 3] = v <= 0 ? 0 : v >= 1 ? 255 : Math.round(v * 255);
+      }
+      var sc = document.createElement("canvas"); sc.width = mw; sc.height = mh; sc.getContext("2d").putImageData(small, 0, 0);
+      var full = document.createElement("canvas"); full.width = w; full.height = h;
+      var fx = full.getContext("2d", { willReadFrequently: true }); fx.imageSmoothingEnabled = true; fx.imageSmoothingQuality = "high"; fx.drawImage(sc, 0, 0, w, h);
+      var fd = fx.getImageData(0, 0, w, h).data, a = new Uint8ClampedArray(w * h);
+      for (var j = 0; j < w * h; j++) a[j] = fd[j * 4 + 3];
       return a;
     });
   }
-
+  // Clean edges: refine the cutout at up to 2048 px, then bring it back to full size.
+  function cleanEdges(srcCanvas, mask) {
+    var W = srcCanvas.width, H = srcCanvas.height, k = Math.min(1, 2048 / Math.max(W, H)), w = Math.max(1, Math.round(W * k)), h = Math.max(1, Math.round(H * k));
+    var ic = document.createElement("canvas"); ic.width = w; ic.height = h;
+    var ix = ic.getContext("2d", { willReadFrequently: true }); ix.imageSmoothingQuality = "high"; ix.drawImage(srcCanvas, 0, 0, w, h);
+    var px = ix.getImageData(0, 0, w, h).data, m = mask;
+    if (k < 1) {             // shrink the mask to the working size
+      var mc = document.createElement("canvas"); mc.width = W; mc.height = H;
+      var mid = new ImageData(W, H); for (var i = 0; i < W * H; i++) { mid.data[i * 4 + 3] = mask[i]; } mc.getContext("2d").putImageData(mid, 0, 0);
+      var sc = document.createElement("canvas"); sc.width = w; sc.height = h; var sx = sc.getContext("2d", { willReadFrequently: true }); sx.imageSmoothingQuality = "high"; sx.drawImage(mc, 0, 0, w, h);
+      var sd = sx.getImageData(0, 0, w, h).data; m = new Uint8ClampedArray(w * h); for (i = 0; i < w * h; i++) m[i] = sd[i * 4 + 3];
+    }
+    var res = EDGE.refine(px, m, w, h, { f: Math.max(1, Math.max(w, h) / 1024) });
+    var colour = document.createElement("canvas"); colour.width = w; colour.height = h; colour.getContext("2d").putImageData(new ImageData(res.rgb, w, h), 0, 0);
+    if (k === 1) {
+      return { alpha: res.alpha, subject: colour };
+    }
+    // back to full size: the refined edge, and the cleaned edge colours over the untouched photo
+    var ac = document.createElement("canvas"); ac.width = w; ac.height = h; var aid = new ImageData(w, h);
+    for (i = 0; i < w * h; i++) aid.data[i * 4 + 3] = res.alpha[i]; ac.getContext("2d").putImageData(aid, 0, 0);
+    var af = document.createElement("canvas"); af.width = W; af.height = H; var afx = af.getContext("2d", { willReadFrequently: true }); afx.imageSmoothingQuality = "high"; afx.drawImage(ac, 0, 0, W, H);
+    var cf = document.createElement("canvas"); cf.width = W; cf.height = H; var cfx = cf.getContext("2d", { willReadFrequently: true }); cfx.imageSmoothingQuality = "high"; cfx.drawImage(colour, 0, 0, W, H);
+    var ad = afx.getImageData(0, 0, W, H).data, cd = cfx.getImageData(0, 0, W, H), od = srcCanvas.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, W, H), alpha = new Uint8ClampedArray(W * H);
+    for (i = 0; i < W * H; i++) {
+      var al = ad[i * 4 + 3]; alpha[i] = al;
+      if (al >= 250) { var j = i * 4; cd.data[j] = od.data[j]; cd.data[j + 1] = od.data[j + 1]; cd.data[j + 2] = od.data[j + 2]; }   // inside the subject: keep full detail
+      cd.data[i * 4 + 3] = 255;
+    }
+    var subject = document.createElement("canvas"); subject.width = W; subject.height = H; subject.getContext("2d").putImageData(cd, 0, 0);
+    return { alpha: alpha, subject: subject };
+  }
+  function applyClean() {
+    if (!rawMask) return;
+    if ($("bClean").checked) { var r = cleanEdges(src, rawMask); aiMask = r.alpha; subjSrc = r.subject; }
+    else { aiMask = rawMask; subjSrc = null; }
+  }
   // ----- loading an image -----
   $("bdrop").onclick = function () { if (!busy) $("bfile").click(); };
   $("bdrop").onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("bdrop").click(); } };
@@ -3844,7 +4209,7 @@
         var ox = o.getContext("2d"); ox.imageSmoothingQuality = "high"; ox.drawImage(c, 0, 0, o.width, o.height); c = o;
         note("This photo is very large, so it was scaled to " + c.width + " × " + c.height + " px.");
       } else note("");
-      src = c; name = PT.base(file); aiMask = null; maskC = null; undo = []; doneSubj = null; blurC = null;
+      src = c; name = PT.base(file); aiMask = null; rawMask = null; subjSrc = null; maskC = null; undo = []; doneSubj = null; blurC = null;
       $("bdrop").hidden = true; $("bView").hidden = false; $("bAnother").hidden = false; $("bEdit").hidden = true;
       $("bName").textContent = file.name;
       showOrig = true; setShow(true);
@@ -3862,6 +4227,12 @@
   }
   [].forEach.call(document.querySelectorAll("[data-subj]"), function (b) {
     b.onclick = function () { if (busy) return; subj = b.dataset.subj; pressed("data-subj", subj); syncRun(); };
+  });
+  $("bClean").addEventListener("change", function () {
+    if (!rawMask || busy) return;
+    note(this.checked ? "Cleaning up the edges…" : "");
+    var self = this;
+    setTimeout(function () { applyClean(); buildMask(); undo = []; syncUndo(); render(); note(self.checked ? "Edges cleaned. Touch-ups were cleared." : "Showing the AI’s cutout without clean-up. Touch-ups were cleared."); }, 30);
   });
   [].forEach.call(document.querySelectorAll("[data-edge]"), function (b) {
     b.onclick = function () { if (busy) return; edge = b.dataset.edge; pressed("data-edge", edge); if (aiMask) { buildMask(); undo = []; syncUndo(); render(); } };
@@ -3932,7 +4303,7 @@
     }
     if (!subjC || subjC.width !== w || subjC.height !== h) { subjC = document.createElement("canvas"); subjC.width = w; subjC.height = h; }
     var sx = subjC.getContext("2d");
-    sx.globalCompositeOperation = "source-over"; sx.clearRect(0, 0, w, h); sx.drawImage(src, 0, 0);
+    sx.globalCompositeOperation = "source-over"; sx.clearRect(0, 0, w, h); sx.drawImage(subjSrc || src, 0, 0);
     sx.globalCompositeOperation = "destination-in"; sx.drawImage(maskC, 0, 0);
     sx.globalCompositeOperation = "source-over";
     x.drawImage(subjC, 0, 0);
@@ -3943,22 +4314,34 @@
     if (!src || busy) return;
     busy = true; $("bRun").disabled = true; $("bProg").hidden = false; $("bProgFill").style.width = "0%";
     $("bRun").textContent = "Loading the AI…"; note("");
-    var key = subj, start = performance.now();
+    var key = subj, start = performance.now(), fellBack = false;
     function attempt(retried) {
       return getModel(key).then(function (m) {
         $("bRun").textContent = "Removing background…"; $("bProgFill").style.width = "100%";
-        return new Promise(function (r) { setTimeout(r, 30); }).then(function () { return segment(m, src); })
+        return new Promise(function (r) { setTimeout(r, 30); }).then(function () { return segment(m, src, MODELS[key].kind); })
           .then(function (mask) { return { mask: mask, device: m.device }; })
           .catch(function (e) {
-            if (m.device === "webgpu" && !retried) { console.warn("WebGPU failed, retrying on CPU", e); noGPU[key] = true; delete models[key]; return attempt(true); }
+            if (m.device === "webgpu" && !retried && !MODELS[key].gpuOnly) { console.warn("WebGPU failed, retrying on CPU", e); noGPU[key] = true; delete models[key]; return attempt(true); }
+            if (MODELS[key].gpuOnly) { noGPU[key] = true; delete models[key]; throw new Error("NEEDS_GPU"); }
             throw e;
           });
       });
     }
-    attempt(false).then(function (r) {
-      aiMask = r.mask; doneSubj = key; buildMask(); undo = []; syncUndo(); blurC = null;
+    function withFallback() {
+      return attempt(false).catch(function (e) {
+        if (e && e.message === "NEEDS_GPU" && key === "best") { fellBack = true; key = "standard"; $("bRun").textContent = "Loading the AI…"; return attempt(false); }
+        throw e;
+      });
+    }
+    withFallback().then(function (r) {
+      rawMask = r.mask; doneSubj = subj;
+      if ($("bClean").checked) { $("bRun").textContent = "Cleaning up the edges…"; }
+      return new Promise(function (res) { setTimeout(res, 30); }).then(function () { applyClean(); return r; });
+    }).then(function (r) {
+      buildMask(); undo = []; syncUndo(); blurC = null;
       $("bEdit").hidden = false; setShow(false); syncFmt();
-      note("Done in " + ((performance.now() - start) / 1000).toFixed(1) + " s" + (r.device === "wasm" ? " (using your processor; a graphics card would be faster)" : "") +
+      note((fellBack ? "Best quality needs a graphics card PocketTool can use, so Standard was used instead. " : "") +
+           "Done in " + ((performance.now() - start) / 1000).toFixed(1) + " s" + (r.device === "wasm" ? " (using your processor; a graphics card would be faster)" : "") +
            ". Use Touch up to fix any mistakes, then Save.");
     }).catch(function (e) {
       console.error(e);
@@ -6343,6 +6726,502 @@
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
   var PT = window.PT;
+  // ===== Turning choices into ffmpeg instructions (kept separate so it can be tested) =====
+  var MEDIA = (function () {
+    var AUDIO_EXT = ["mp3", "m4a", "aac", "wav", "ogg", "oga", "opus", "flac", "wma", "aiff", "aif"];
+    var COPY_OK = ["mp4", "m4v", "mov", "webm", "mkv", "avi", "mp3", "m4a", "wav", "ogg", "opus", "flac", "aac"];
+    function extOf(name) { var m = /\.([a-z0-9]{1,5})$/i.exec(name || ""); return m ? m[1].toLowerCase() : ""; }
+    function isAudioName(name, type) { return /^audio\//.test(type || "") || AUDIO_EXT.indexOf(extOf(name)) >= 0; }
+    function t(x) { return (Math.round(x * 1000) / 1000).toFixed(3); }
+    function even() { return "scale=trunc(iw/2)*2:trunc(ih/2)*2"; }
+    // Limit the shorter side to n pixels, keep the shape, and keep sizes even (needed for MP4)
+    function cap(n) {
+      return "scale='if(gte(iw,ih),-2,trunc(min(" + n + ",iw)/2)*2)':'if(gte(iw,ih),trunc(min(" + n + ",ih)/2)*2,-2)'";
+    }
+    var ENC = {
+      mp4: function (o) { return ["-c:v", "libx264", "-preset", "veryfast", "-crf", String(o.crf || 21), "-pix_fmt", "yuv420p", "-vf", o.vf || even(), "-c:a", "aac", "-b:a", (o.abr || 160) + "k", "-movflags", "+faststart"]; },
+      webm: function (o) { return ["-c:v", "libvpx", "-deadline", "realtime", "-cpu-used", "8", "-b:v", "2M", "-crf", "10", "-vf", o.vf || even(), "-c:a", "libopus", "-b:a", "128k"]; },
+      mp3: function () { return ["-vn", "-c:a", "libmp3lame", "-q:a", "2"]; },
+      m4a: function () { return ["-vn", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart"]; },
+      wav: function () { return ["-vn", "-c:a", "pcm_s16le"]; }
+    };
+    var MIME = { mp4: "video/mp4", webm: "video/webm", mov: "video/quicktime", mkv: "video/x-matroska", avi: "video/x-msvideo", m4v: "video/mp4",
+      mp3: "audio/mpeg", m4a: "audio/mp4", wav: "audio/wav", ogg: "audio/ogg", opus: "audio/ogg", flac: "audio/flac", aac: "audio/aac", gif: "image/gif" };
+    // o: { mode, inName, isAudio, start, end, useRange, dur, trimMode, convTo, goal, q, sizeMB, res, mute, gifW, gifFps, gifLoop, audFmt }
+    function build(o) {
+      var inExt = extOf(o.inName), range = o.mode === "trim" || o.mode === "gif" || o.useRange;
+      var pre = range ? ["-ss", t(o.start), "-to", t(o.end)] : [];
+      var len = range ? Math.max(0.1, o.end - o.start) : o.dur;
+      var args = ["-hide_banner", "-y"].concat(pre, ["-i", o.inName]), ext, note = "";
+      if (o.mode === "trim") {
+        if (o.trimMode === "fast") {
+          ext = COPY_OK.indexOf(inExt) >= 0 ? inExt : "mkv";
+          args = args.concat(["-map", "0:v?", "-map", "0:a?", "-c", "copy", "-avoid_negative_ts", "make_zero"]);
+        } else if (o.isAudio) {
+          ext = ["mp3", "m4a", "wav"].indexOf(inExt) >= 0 ? inExt : "mp3";
+          args = args.concat(ENC[ext]({}));
+        } else {
+          ext = inExt === "webm" ? "webm" : "mp4";
+          args = args.concat(ENC[ext]({ crf: 20 }));
+        }
+      } else if (o.mode === "convert") {
+        ext = o.convTo;
+        if (o.isAudio && (ext === "mp4" || ext === "webm")) throw new Error("This is an audio file, so it can’t be made into a video. Choose MP3, M4A or WAV.");
+        args = args.concat(ENC[ext]({}));
+      } else if (o.mode === "audio") {
+        ext = o.audFmt;
+        args = args.concat(ENC[ext]({}));
+      } else if (o.mode === "gif") {
+        ext = "gif";
+        var w = +o.gifW || 480, fps = +o.gifFps || 12;
+        args = args.concat(["-vf", "fps=" + fps + ",scale='min(" + w + ",iw)':-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4",
+          "-loop", o.gifLoop ? "0" : "-1"]);
+        if (len > 20) note = "That’s a long GIF; it may be very large. Shorter clips work best.";
+      } else if (o.mode === "compress") {
+        if (o.isAudio) throw new Error("Compress video works on videos. For audio, use Convert and choose MP3.");
+        ext = "mp4";
+        var res = +o.res || 0, vf, v = ["-c:v", "libx264", "-preset", "veryfast", "-pix_fmt", "yuv420p"], a;
+        if (o.goal === "size") {
+          if (!(len > 0)) throw new Error("PocketTool couldn’t tell how long this video is, so it can’t aim for a size. Use Quality instead.");
+          var total = Math.floor(+o.sizeMB * 8 * 1024 * 0.92 / len), ab = o.mute ? 0 : (total > 700 ? 128 : total > 300 ? 96 : 64), vb = total - ab;
+          if (vb < 60) throw new Error("That size is too small for a video this long. Choose a larger size, or trim it first.");
+          if (vb < 350 && (!res || res > 480)) res = 480; else if (vb < 900 && (!res || res > 720)) res = 720;
+          v = v.concat(["-b:v", vb + "k", "-maxrate", Math.round(vb * 1.4) + "k", "-bufsize", vb * 2 + "k"]);
+          a = o.mute ? ["-an"] : ["-c:a", "aac", "-b:a", ab + "k"];
+          note = "Aiming for about " + vb + " kbps video" + (ab ? " and " + ab + " kbps sound" : "") + (res ? ", up to " + res + "p" : "") + ".";
+        } else {
+          var crf = { high: 22, balanced: 26, small: 30 }[o.q] || 26;
+          v = v.concat(["-crf", String(crf)]);
+          a = o.mute ? ["-an"] : ["-c:a", "aac", "-b:a", o.q === "small" ? "96k" : "128k"];
+        }
+        vf = res ? cap(res) : even();
+        args = args.concat(v, ["-vf", vf], a, ["-movflags", "+faststart"]);
+      } else throw new Error("Unknown mode");
+      var out = "out." + ext;
+      args.push(out);
+      return { args: args, out: out, ext: ext, mime: MIME[ext] || "application/octet-stream", note: note, len: len };
+    }
+    function parseTime(s) {
+      s = String(s || "").trim().replace(",", ".");
+      if (!s) return NaN;
+      var p = s.split(":").map(Number);
+      if (p.some(isNaN)) return NaN;
+      return p.reduce(function (a, b) { return a * 60 + b; }, 0);
+    }
+    function fmtTime(x) {
+      if (!isFinite(x)) return "–";
+      var h = Math.floor(x / 3600), m = Math.floor((x % 3600) / 60), s = x % 60;
+      var ss = (s < 10 ? "0" : "") + s.toFixed(1);
+      return (h ? h + ":" + (m < 10 ? "0" : "") + m : String(m)) + ":" + ss;
+    }
+    function probe(lines) {          // read duration and streams from ffmpeg's report about a file
+      var text = lines.join("\n"), d = /Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)/.exec(text);
+      var v = /Stream #\d+:\d+[^\n]*Video:\s*([^,\s]+)[^\n]*?(\d{2,5})x(\d{2,5})/.exec(text), a = /Stream #\d+:\d+[^\n]*Audio:\s*([^,\s]+)/.exec(text);
+      return { dur: d ? +d[1] * 3600 + +d[2] * 60 + +d[3] : 0, video: v ? { codec: v[1], w: +v[2], h: +v[3] } : null, audio: a ? { codec: a[1] } : null };
+    }
+    function friendlyError(lines) {
+      var text = lines.slice(-40).join("\n");
+      if (/does not contain any stream|Output file .* does not contain|matches no streams/i.test(text)) return "There’s nothing to save. If you’re extracting audio, this video may have no sound.";
+      if (/Unknown encoder|Encoder not found/i.test(text)) return "That format isn’t available in the video engine. Try MP4 or MP3 instead.";
+      if (/Invalid data found|could not find codec parameters|moov atom not found/i.test(text)) return "This file couldn’t be read. It may be damaged, or in a format the video engine doesn’t support.";
+      if (/memory|Cannot allocate/i.test(text)) return "Your computer ran out of memory for this video. Try a shorter part, or a smaller size.";
+      var last = lines.filter(function (l) { return /error|invalid|failed|not supported/i.test(l); }).pop();
+      return "The video engine stopped with an error" + (last ? ": " + last.trim().slice(0, 160) : ".");
+    }
+    return { build: build, parseTime: parseTime, fmtTime: fmtTime, probe: probe, friendlyError: friendlyError, extOf: extOf, isAudioName: isAudioName };
+  })();
+
+  // ===== Video & audio tool =====
+  var J = "https://cdn.jsdelivr.net/npm/";
+  var URLS = {
+    main: J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js",
+    worker: J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/814.ffmpeg.js",
+    core: J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js",
+    wasm: J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm"
+  };
+  var MODES = { trim: "Trim video & audio", convert: "Convert video & audio", compress: "Compress video", gif: "Video to GIF", audio: "Extract audio" };
+  var HINTS = { fast: "Instant, with no loss of quality. It cuts at the nearest key point in the video, so the start can be a second or two early.",
+    exact: "Starts and ends exactly where you choose. The video is re-saved, which takes longer." };
+  var S = { mode: "trim", file: null, url: null, el: null, dur: 0, isAudio: false, width: 0, height: 0, info: null, out: null, outUrl: null, outName: "",
+    busy: false, ff: null, loading: null, logs: [], len: 0, written: null, goal: "quality" };
+
+  function note(msg, err) { $("mdNote").textContent = msg; $("mdNote").className = "note" + (err ? " err" : ""); }
+  function onTab() { return document.body.dataset.tab === "media"; }
+  function addScript(url) {
+    return new Promise(function (res, rej) {
+      var el = document.createElement("script"); el.src = url; el.crossOrigin = "anonymous";
+      el.onload = function () { res(); }; el.onerror = function () { el.remove(); rej(new Error("couldn’t download the video engine")); };
+      document.head.appendChild(el);
+    });
+  }
+  function blobURL(url, type, onProgress) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error("couldn’t download the video engine (" + url.split("/").pop() + ", error " + r.status + ")");
+      var total = +r.headers.get("content-length") || 0;
+      if (!r.body || !onProgress) return r.blob();
+      var reader = r.body.getReader(), chunks = [], got = 0;
+      function pump() { return reader.read().then(function (x) { if (x.done) return new Blob(chunks); chunks.push(x.value); got += x.value.length; onProgress(got, total); return pump(); }); }
+      return pump();
+    }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+  }
+  function status(t) { $("mdRun").textContent = t; }
+  // The video engine (ffmpeg.wasm). Its worker must come from a blob address, because browsers won't start workers from another website.
+  function engine() {
+    if (S.ff) return Promise.resolve(S.ff);
+    if (S.loading) return S.loading;
+    status("Downloading the video engine…");
+    S.loading = (window.FFmpegWASM ? Promise.resolve() : addScript(URLS.main)).then(function () {
+      if (!window.FFmpegWASM || !window.FFmpegWASM.FFmpeg) throw new Error("the video engine didn’t load");
+      return Promise.all([blobURL(URLS.core, "text/javascript"),
+        blobURL(URLS.wasm, "application/wasm", function (g, t) { status("Downloading the video engine… " + (t ? Math.round(g / t * 100) + "% of " + PT.fmtSize(t) : PT.fmtSize(g))); $("mdProgFill").style.width = (t ? g / t * 100 : 0) + "%"; }),
+        blobURL(URLS.worker, "text/javascript")]);
+    }).then(function (u) {
+      var ff = new window.FFmpegWASM.FFmpeg();
+      ff.on("log", function (e) { S.logs.push(e.message); if (S.logs.length > 600) S.logs.splice(0, 200); onLog(e.message); });
+      ff.on("progress", function (e) { if (!S.timeSeen && e.progress >= 0 && e.progress <= 1) setProgress(e.progress); });
+      status("Starting the video engine…");
+      return ff.load({ coreURL: u[0], wasmURL: u[1], classWorkerURL: u[2] }).then(function () { S.ff = ff; S.written = null; return ff; });
+    }).catch(function (e) { S.loading = null; throw e; });
+    return S.loading;
+  }
+  function setProgress(f) { f = Math.max(0, Math.min(1, f)); $("mdProgFill").style.width = Math.round(f * 100) + "%"; status("Working… " + Math.round(f * 100) + "%"); }
+  function onLog(line) {
+    var m = /time=\s*(\d+):(\d+):(\d+(?:\.\d+)?)/.exec(line);
+    if (m && S.busy && S.len > 0) { S.timeSeen = true; setProgress((+m[1] * 3600 + +m[2] * 60 + +m[3]) / S.len); }
+  }
+  function inName() { var e = MEDIA.extOf(S.file.name) || (S.isAudio ? "mp3" : "mp4"); return "in." + e; }
+  function writeInput(ff) {
+    if (S.written === S.file) return Promise.resolve();
+    status("Reading the file…");
+    return S.file.arrayBuffer().then(function (b) { return ff.writeFile(inName(), new Uint8Array(b)); }).then(function () { S.written = S.file; });
+  }
+  function probeWithEngine() {
+    return engine().then(function (ff) {
+      return writeInput(ff).then(function () {
+        S.logs = [];
+        return ff.exec(["-hide_banner", "-i", inName()]).catch(function () {});
+      }).then(function () {
+        var p = MEDIA.probe(S.logs);
+        if (p.dur) S.dur = p.dur;
+        if (p.video) { S.width = p.video.w; S.height = p.video.h; S.isAudio = false; }
+        else if (p.audio) S.isAudio = true;
+        S.info = p; return p;
+      });
+    });
+  }
+
+  // ----- loading a file -----
+  function isMedia(f) { return /^(video|audio)\//.test(f.type) || /\.(mp4|m4v|mov|webm|mkv|avi|wmv|3gp|mp3|m4a|aac|wav|ogg|oga|opus|flac|wma|aiff?)$/i.test(f.name || ""); }
+  function load(file) {
+    if (!file || !isMedia(file)) { note("Choose a video or audio file, such as MP4, MOV or MP3.", true); return; }
+    if (file.size > 1.9 * 1073741824) { note("This file is over 1.9 GB, which is more than the video engine can handle. Trim it in another app first, or use a smaller file.", true); return; }
+    if (S.url) URL.revokeObjectURL(S.url);
+    clearResult();
+    S.file = file; S.url = URL.createObjectURL(file); S.isAudio = MEDIA.isAudioName(file.name, file.type); S.dur = 0; S.width = S.height = 0; S.info = null; S.written = null;
+    $("mddrop").hidden = true; $("mdView").hidden = false; $("mdAnother").hidden = false;
+    $("mdName").textContent = file.name;
+    var el = document.createElement(S.isAudio ? "audio" : "video");
+    el.controls = true; el.preload = "metadata"; el.src = S.url; el.playsInline = true;
+    $("mdPlayer").innerHTML = ""; $("mdPlayer").appendChild(el); S.el = el;
+    $("mdInfo").textContent = PT.fmtSize(file.size);
+    note(file.size > 700 * 1048576 ? "This is a big file. It will work, but can take a long time and use a lot of memory." : "");
+    el.onloadedmetadata = function () {
+      if (isFinite(el.duration) && el.duration > 0) S.dur = el.duration;
+      if (el.videoWidth) { S.width = el.videoWidth; S.height = el.videoHeight; }
+      else if (!S.isAudio && el.tagName === "VIDEO") { /* plays sound only, or the picture can't be shown */ }
+      ready();
+    };
+    el.onerror = function () {
+      // The browser can't preview this format (for example some MOV or AVI files), so ask the video engine
+      $("mdPlayer").innerHTML = '<p class="hint mdnoprev">A preview isn’t available for this format, but PocketTool can still work with it.</p>';
+      S.el = null;
+      note("Reading the file with the video engine…");
+      probeWithEngine().then(function () { note(""); ready(); status(runLabel()); }).catch(function (e) { note("This file couldn’t be read: " + e.message, true); status(runLabel()); });
+    };
+    ready();
+  }
+  window.__mediaLoad = load;
+  function ready() {
+    var d = S.dur;
+    $("mdInfo").textContent = [S.width ? S.width + " × " + S.height : S.isAudio ? "audio" : "", d ? MEDIA.fmtTime(d) : "", PT.fmtSize(S.file.size)].filter(Boolean).join(", ");
+    $("mdRange").hidden = !(d > 0);
+    if (d > 0) {
+      var st = 0, en = d;
+      if (S.mode === "gif") en = Math.min(d, 5);
+      setRange(st, en);
+    }
+    sync();
+  }
+
+  // ----- start and end -----
+  function range() { return { s: S.start || 0, e: S.end || S.dur }; }
+  function setRange(s, e) {
+    var d = S.dur || 0; s = Math.max(0, Math.min(s, d)); e = Math.max(0, Math.min(e, d));
+    if (e - s < 0.1) { if (s + 0.1 <= d) e = s + 0.1; else s = Math.max(0, e - 0.1); }
+    S.start = s; S.end = e;
+    $("mdStart").value = Math.round(s / d * 1000); $("mdEnd").value = Math.round(e / d * 1000);
+    if (document.activeElement !== $("mdStartT")) $("mdStartT").value = MEDIA.fmtTime(s);
+    if (document.activeElement !== $("mdEndT")) $("mdEndT").value = MEDIA.fmtTime(e);
+    $("mdSelBar").style.left = (s / d * 100) + "%"; $("mdSelBar").style.width = ((e - s) / d * 100) + "%";
+    $("mdSel").textContent = "Selected: " + MEDIA.fmtTime(s) + " to " + MEDIA.fmtTime(e) + " (" + MEDIA.fmtTime(e - s) + " long)";
+  }
+  $("mdStart").addEventListener("input", function () { var s = this.value / 1000 * S.dur; setRange(Math.min(s, S.end - 0.1), S.end); if (S.el) S.el.currentTime = S.start; clearResult(); });
+  $("mdEnd").addEventListener("input", function () { var e = this.value / 1000 * S.dur; setRange(S.start, Math.max(e, S.start + 0.1)); if (S.el) S.el.currentTime = S.end; clearResult(); });
+  function typed(which) {
+    var v = MEDIA.parseTime($(which === "s" ? "mdStartT" : "mdEndT").value);
+    if (!isFinite(v)) { note("Type a time like 1:23.5 or 83.5.", true); return; }
+    note(""); if (which === "s") setRange(v, Math.max(S.end, v + 0.1)); else setRange(Math.min(S.start, v - 0.1), v); clearResult();
+  }
+  $("mdStartT").addEventListener("change", function () { typed("s"); });
+  $("mdEndT").addEventListener("change", function () { typed("e"); });
+  $("mdSetStart").onclick = function () { if (S.el) { setRange(S.el.currentTime, Math.max(S.end, S.el.currentTime + 0.1)); clearResult(); } };
+  $("mdSetEnd").onclick = function () { if (S.el) { setRange(Math.min(S.start, S.el.currentTime - 0.1), S.el.currentTime); clearResult(); } };
+
+  // ----- modes and options -----
+  function setMode(m) {
+    if (!MODES[m] || S.busy) return;
+    S.mode = m;
+    [].forEach.call(document.querySelectorAll("[data-mmode]"), function (b) { b.setAttribute("aria-pressed", b.dataset.mmode === m ? "true" : "false"); });
+    [].forEach.call(document.querySelectorAll(".mopt"), function (o) { o.hidden = o.dataset.for !== m; });
+    if (m === "gif" && S.dur && S.end - S.start > 15) setRange(S.start, Math.min(S.dur, S.start + 5));
+    clearResult(); sync();
+    if (PT.navSync) PT.navSync();
+  }
+  [].forEach.call(document.querySelectorAll("[data-mmode]"), function (b) { b.onclick = function () { setMode(b.dataset.mmode); }; });
+  [].forEach.call(document.querySelectorAll("[data-mdgoal]"), function (b) {
+    b.onclick = function () { S.goal = b.dataset.mdgoal; [].forEach.call(document.querySelectorAll("[data-mdgoal]"), function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); }); clearResult(); sync(); };
+  });
+  ["mdTrimMode", "mdConvTo", "mdQ", "mdSize", "mdRes", "mdMute", "mdGifW", "mdGifFps", "mdGifLoop", "mdAudFmt", "mdUseRange"].forEach(function (id) { $(id).addEventListener("change", function () { clearResult(); sync(); }); });
+  function runLabel() {
+    if (!S.file) return "Choose a video or audio file";
+    return { trim: "Trim", convert: "Convert to " + $("mdConvTo").value.toUpperCase(), compress: "Compress video", gif: "Make GIF", audio: "Extract audio as " + $("mdAudFmt").value.toUpperCase() }[S.mode];
+  }
+  function sync() {
+    $("mdTrimHint").textContent = HINTS[$("mdTrimMode").value];
+    $("mdQWrap").hidden = S.goal !== "quality"; $("mdSizeWrap").hidden = S.goal !== "size";
+    var needsRange = S.mode === "trim" || S.mode === "gif";
+    $("mdUseRangeWrap").hidden = needsRange || !S.file;
+    var showRange = S.file && S.dur > 0 && (needsRange || $("mdUseRange").checked);
+    $("mdRange").hidden = !showRange;
+    var vidOnly = S.mode === "compress" || S.mode === "gif";
+    [].forEach.call($("mdConvTo").options, function (o) { o.disabled = S.isAudio && (o.value === "mp4" || o.value === "webm"); });
+    if (S.isAudio && ($("mdConvTo").value === "mp4" || $("mdConvTo").value === "webm")) $("mdConvTo").value = "mp3";
+    if (S.busy) return;
+    $("mdRun").disabled = !S.file || (vidOnly && S.isAudio) || (S.mode === "audio" && S.isAudio);
+    $("mdRun").textContent = runLabel();
+    // Warnings about the chosen file: show them, and clear only these (never an error from a finished job)
+    var warn = S.file && vidOnly && S.isAudio ? "This is an audio file. " + (S.mode === "gif" ? "GIFs are made from videos." : "Compress video works on videos; to make audio smaller, use Convert and choose MP3.")
+      : S.file && S.mode === "audio" && S.isAudio ? "This is already an audio file. To change its format, use Convert." : "";
+    if (warn) { note(warn, true); S.warned = true; }
+    else if (S.warned) { if ($("mdNote").textContent.indexOf("audio file") >= 0) note(""); S.warned = false; }
+  }
+
+  // ----- running -----
+  function clearResult() {
+    if (S.outUrl) URL.revokeObjectURL(S.outUrl);
+    S.out = null; S.outUrl = null; $("mdResult").hidden = true; $("mdOut").innerHTML = "";
+  }
+  function options() {
+    return { mode: S.mode, inName: inName(), isAudio: S.isAudio, start: S.start || 0, end: S.end || S.dur, useRange: $("mdUseRange").checked, dur: S.dur,
+      trimMode: $("mdTrimMode").value, convTo: $("mdConvTo").value, goal: S.goal, q: $("mdQ").value, sizeMB: +$("mdSize").value, res: +$("mdRes").value,
+      mute: $("mdMute").checked, gifW: +$("mdGifW").value, gifFps: +$("mdGifFps").value, gifLoop: $("mdGifLoop").checked, audFmt: $("mdAudFmt").value };
+  }
+  function setBusy(on) {
+    S.busy = on;
+    $("panel-media").classList.toggle("is-busy", on);
+    [].forEach.call(document.querySelectorAll("#panel-media .panel select, #panel-media .panel input, [data-mmode], [data-mdgoal], #mdStart, #mdEnd, #mdStartT, #mdEndT, #mdSetStart, #mdSetEnd"), function (el) { el.disabled = on; });
+    $("mdRun").disabled = on; $("mdStop").hidden = !on; $("mdProg").hidden = !on;
+    if (!on) sync();
+  }
+  $("mdRun").onclick = function () {
+    if (!S.file || S.busy) return;
+    var plan;
+    setBusy(true); clearResult(); note(""); $("mdProgFill").style.width = "0%";
+    var needLen = S.mode === "compress" && S.goal === "size" && !S.dur;
+    var t0 = Date.now();
+    engine().then(function (ff) {
+      return writeInput(ff).then(function () { return needLen ? probeWithEngine() : null; }).then(function () {
+        plan = MEDIA.build(options());
+        S.len = plan.len; S.timeSeen = false; S.logs = [];
+        if (plan.note) note(plan.note);
+        status("Working…");
+        return ff.exec(plan.args);
+      }).then(function (code) {
+        if (code !== 0 && code !== undefined) throw new Error(MEDIA.friendlyError(S.logs));
+        return ff.readFile(plan.out);
+      }).then(function (data) {
+        if (!data || !data.length) throw new Error(MEDIA.friendlyError(S.logs));
+        ff.deleteFile(plan.out).catch(function () {});
+        showResult(new Blob([data.buffer ? data : new Uint8Array(data)], { type: plan.mime }), plan, (Date.now() - t0) / 1000);
+      });
+    }).catch(function (e) {
+      if (S.stopped) { note("Stopped."); return; }
+      console.error(e);
+      var m = e && e.message ? e.message : String(e);
+      note(m.charAt(0).toUpperCase() + m.slice(1) + (/[.!?]$/.test(m) ? "" : "."), true);
+    }).then(function () { S.stopped = false; setBusy(false); });
+  };
+  $("mdStop").onclick = function () {
+    if (!S.ff) return;
+    S.stopped = true;
+    try { S.ff.terminate(); } catch (e) {}
+    S.ff = null; S.loading = null; S.written = null;   // the engine restarts next time
+  };
+  function showResult(blob, plan, secs) {
+    S.out = blob; S.outUrl = URL.createObjectURL(blob);
+    var suffix = { trim: "-trimmed", convert: "", compress: "-compressed", gif: "", audio: "-audio" }[S.mode];
+    S.outName = PT.base(S.file) + suffix + "." + plan.ext;
+    var box = $("mdOut"); box.innerHTML = "";
+    var el;
+    if (plan.ext === "gif") { el = document.createElement("img"); el.alt = "Your GIF"; }
+    else { el = document.createElement(/^audio/.test(plan.mime) ? "audio" : "video"); el.controls = true; el.playsInline = true; }
+    el.src = S.outUrl; box.appendChild(el);
+    var meta = document.createElement("p"); meta.className = "hint";
+    var change = S.file.size ? Math.round((1 - blob.size / S.file.size) * 100) : 0;
+    meta.textContent = S.outName + ", " + PT.fmtSize(blob.size) + (S.mode === "compress" || S.mode === "convert" ? " (" + (change >= 0 ? change + "% smaller" : -change + "% bigger") + " than the original)" : "") + ". Done in " + secs.toFixed(1) + " s.";
+    box.appendChild(meta);
+    if (el.tagName !== "IMG") el.onloadedmetadata = function () {
+      if (S.mode === "trim" && $("mdTrimMode").value === "fast" && isFinite(el.duration) && el.duration > plan.len + 0.4) {
+        note("The clip starts about " + (el.duration - plan.len).toFixed(1) + " s earlier than you chose, at the nearest key point in the video. For a precise start, choose “Exact to the frame” and trim again.");
+      }
+    };
+    $("mdResult").hidden = false;
+    if (!$("mdNote").classList.contains("err") && !plan.note) note("Done. Play it to check, then Save.");
+  }
+  $("mdSave").onclick = function () { if (S.out) PT.download(S.out, S.outName); };
+  $("mdAnother").onclick = function () { if (!S.busy) $("mdfile").click(); };
+
+  // ----- adding files -----
+  $("mddrop").onclick = function () { $("mdfile").click(); };
+  $("mddrop").onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("mdfile").click(); } };
+  $("mdfile").onchange = function () { if (this.files[0]) load(this.files[0]); this.value = ""; };
+  ["dragenter", "dragover"].forEach(function (t) { document.addEventListener(t, function (e) { if (onTab() && e.dataTransfer && [].indexOf.call(e.dataTransfer.types || [], "Files") >= 0) $("mddrop").classList.add("over"); }); });
+  ["dragleave", "drop"].forEach(function (t) { document.addEventListener(t, function () { $("mddrop").classList.remove("over"); }); });
+  document.addEventListener("drop", function (e) { var f = e.dataTransfer.files[0]; if (onTab() && f && !S.busy) load(f); });
+
+  window.PT.media = {
+    getMode: function () { return S.mode; },
+    setMode: setMode,
+    add: function (m, files) { setMode(m); if (files && files[0]) load(files[0]); },
+    isMedia: isMedia
+  };
+  window.__mediaTools = MEDIA;
+  sync();
+
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var PT = window.PT;
+  // The build stamps these two from package.json and the GitHub repository (see scripts/stamp-version.mjs)
+  function meta(n) { var m = document.querySelector('meta[name="' + n + '"]'); return m ? (m.getAttribute("content") || "").trim() : ""; }
+  var VERSION = meta("pockettool-version") || "0.0.0", REPO = meta("pockettool-repo");
+  var REPO_OK = /^[\w.-]+\/[\w.-]+$/.test(REPO) && !/YOUR-USERNAME/i.test(REPO);
+  var KEY = "pockettool:updates";
+  var st = {}; try { st = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { st = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+
+  function parse(v) {
+    var m = /^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:-([0-9A-Za-z.-]+))?/.exec(String(v || "").trim());
+    return m ? [+m[1], +(m[2] || 0), +(m[3] || 0), m[4] || ""] : null;
+  }
+  // is version a newer than version b?
+  function newer(a, b) {
+    var x = parse(a), y = parse(b);
+    if (!x || !y) return false;
+    for (var i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i];
+    return !x[3] && !!y[3];          // 1.4.0 is newer than 1.4.0-beta
+  }
+  function platform() {
+    var ua = navigator.userAgent;
+    return /Windows/i.test(ua) ? "win" : /Android/i.test(ua) ? "other" : /Linux|X11/i.test(ua) ? "linux" : /Mac/i.test(ua) ? "mac" : "other";
+  }
+  function isDesktop() { return location.protocol === "app:"; }
+  function pickAsset(assets) {
+    assets = assets || [];
+    var p = platform(), rx = !isDesktop() ? /^pockettool\.html$/i : p === "win" ? /setup.*\.exe$/i : p === "linux" ? /\.appimage$/i : null;
+    return (rx && assets.filter(function (a) { return rx.test(a.name); })[0]) || null;
+  }
+  function plainNotes(md) {
+    return String(md || "").replace(/\r/g, "").replace(/<!--[\s\S]*?-->/g, "").replace(/^#+\s*/gm, "").replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/`([^`]+)`/g, "$1").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/^\s*[-*]\s+/gm, "• ").replace(/\n{3,}/g, "\n\n").trim();
+  }
+  window.__updateTools = { newer: newer, parse: parse, pickAsset: pickAsset, plainNotes: plainNotes };
+
+  // ----- the dialog -----
+  function show(o) {
+    var d = $("updDialog");
+    $("updTitle").textContent = o.title;
+    $("updMsg").textContent = o.msg;
+    $("updNotes").hidden = !o.notes; $("updNotes").textContent = o.notes ? (o.notes.length > 900 ? o.notes.slice(0, 900).replace(/\s+\S*$/, "") + "…" : o.notes) : "";
+    var dl = $("updDownload"), page = $("updPage");
+    dl.hidden = !o.download; if (o.download) { dl.href = o.download.url; dl.textContent = o.download.label; }
+    page.hidden = !o.page; if (o.page) page.href = o.page;
+    $("updSkip").hidden = !o.skip; $("updSkip").dataset.version = o.skip || "";
+    $("updAuto").checked = !!st.auto;
+    if (d.showModal) { if (!d.open) d.showModal(); } else d.setAttribute("open", "");
+  }
+  $("updClose").onclick = function () { $("updDialog").close ? $("updDialog").close() : $("updDialog").removeAttribute("open"); };
+  $("updSkip").onclick = function () { st.skip = this.dataset.version; save(); $("updClose").click(); };
+  $("updAuto").onchange = function () { st.auto = this.checked; save(); };
+  $("updDialog").addEventListener("click", function (e) { if (e.target === this) $("updClose").click(); });
+
+  // ----- checking -----
+  var checking = false;
+  function check(manual) {
+    if (checking) return Promise.resolve();
+    if (!REPO_OK) {
+      if (manual) show({ title: "Update checks aren’t set up", msg: "This copy of PocketTool doesn’t know which GitHub page to check. Copies built by GitHub, or downloaded from its Releases page, check automatically. You’re using version " + VERSION + "." });
+      return Promise.resolve();
+    }
+    checking = true;
+    var btns = [].slice.call(document.querySelectorAll("#updBtn, #launchUpd"));
+    btns.forEach(function (b) { b.disabled = true; b.textContent = "Checking…"; });
+    var ctrl = window.AbortController ? new AbortController() : null, timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 9000);
+    return fetch("https://api.github.com/repos/" + REPO + "/releases/latest", { headers: { Accept: "application/vnd.github+json" }, signal: ctrl ? ctrl.signal : undefined, cache: "no-store" })
+      .then(function (r) {
+        if (r.status === 404) throw { friendly: "No published releases were found on GitHub yet, or the project is private." };
+        if (r.status === 403 || r.status === 429) throw { friendly: "GitHub limits how often update checks can be made. Try again in an hour." };
+        if (!r.ok) throw { friendly: "GitHub didn’t answer properly (error " + r.status + "). Try again later." };
+        return r.json();
+      }).then(function (rel) {
+        st.last = Date.now(); save();
+        var latest = String(rel.tag_name || rel.name || "").replace(/^v/i, "");
+        if (!parse(latest)) throw { friendly: "The latest release on GitHub doesn’t have a version number PocketTool understands." };
+        if (newer(latest, VERSION)) {
+          if (!manual && st.skip === latest) return;
+          var asset = pickAsset(rel.assets);
+          var what = !isDesktop() ? "the web version" : platform() === "win" ? "the Windows installer" : platform() === "linux" ? "the Linux AppImage" : "";
+          show({
+            title: "PocketTool " + latest + " is available",
+            msg: "You have version " + VERSION + ". " + (asset ? "Download " + what + ", then open it to update; your settings are kept." : "Open the release page to download the version for your computer."),
+            notes: plainNotes(rel.body) || "",
+            download: asset ? { url: asset.browser_download_url, label: "Download " + latest + " (" + PT.fmtSize(asset.size || 0) + ")" } : { url: rel.html_url, label: "Go to the download page" },
+            page: asset ? rel.html_url : null,
+            skip: manual ? null : latest
+          });
+        } else if (manual) {
+          show({ title: "You’re up to date", msg: "You have PocketTool " + VERSION + ", the latest version." + (newer(VERSION, latest) ? " (That’s newer than the latest published release, " + latest + ".)" : "") });
+        }
+      }).catch(function (e) {
+        if (!manual) return;
+        show({ title: "Couldn’t check for updates", msg: (e && e.friendly) || "PocketTool couldn’t reach GitHub. Check your internet connection and try again." });
+      }).then(function () { clearTimeout(timer); checking = false; btns.forEach(function (b) { b.disabled = false; b.textContent = "Check for updates"; }); });
+  }
+  PT.checkUpdates = function (manual) { return check(manual !== false); };
+  $("updBtn").onclick = function () { check(true); };
+  $("updVersion").textContent = "Version " + VERSION;
+  // optional daily check, only if the user has switched it on
+  if (st.auto && REPO_OK && (!st.last || Date.now() - st.last > 86400000)) setTimeout(function () { check(false); }, 4000);
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var PT = window.PT;
   var TOOLS = [
     { id: "resize", panel: "resize", group: "Images", title: "Resize & upscale", desc: "Make images bigger or smaller, including AI upscaling.", kw: "enlarge shrink scale upscale ai bigger smaller dimensions pixels" },
     { id: "batch", panel: "batch", group: "Images", title: "Batch resize", desc: "Resize a whole set of images at once.", kw: "many multiple folder bulk resize all images instagram full hd" },
@@ -6360,16 +7239,116 @@
     { id: "pdfcompress", panel: "pdfcompress", group: "PDFs", title: "Compress PDF", desc: "Make PDFs smaller for email and uploads.", kw: "smaller file size reduce shrink optimise optimize email pdf" },
     { id: "img2pdf", panel: "convert", mode: "img2pdf", group: "PDFs", title: "Images to PDF", desc: "Combine photos or scans into one PDF.", kw: "scan document combine make pdf" },
     { id: "pdf2img", panel: "convert", mode: "pdf2img", group: "PDFs", title: "PDF to images", desc: "Save PDF pages as pictures.", kw: "extract pages png jpg picture" },
+    { id: "media-trim", panel: "media", mode: "trim", group: "Video & audio", title: "Trim video & audio", desc: "Keep just the part you want.", kw: "cut trim clip shorten video audio mp4 mov mp3" },
+    { id: "media-compress", panel: "media", mode: "compress", group: "Video & audio", title: "Compress video", desc: "Make videos small enough to email or share.", kw: "compress smaller video size email mb reduce shrink" },
+    { id: "media-convert", panel: "media", mode: "convert", group: "Video & audio", title: "Convert video & audio", desc: "MP4, WebM, MP3, M4A or WAV.", kw: "convert mov mp4 webm mkv avi mp3 m4a wav format video audio" },
+    { id: "media-gif", panel: "media", mode: "gif", group: "Video & audio", title: "Video to GIF", desc: "Turn a clip into a looping GIF.", kw: "gif animation animated loop video clip" },
+    { id: "media-audio", panel: "media", mode: "audio", group: "Video & audio", title: "Extract audio", desc: "Save the sound from a video.", kw: "audio sound music mp3 extract rip from video" },
     { id: "qr", panel: "qr", group: "Utilities", title: "QR code maker", desc: "Codes for links, Wi-Fi, contacts and more.", kw: "qr code barcode scan link wifi vcard contact" },
     { id: "sheets", panel: "sheets", group: "Utilities", title: "Spreadsheet converter", desc: "Convert between Excel, CSV and JSON.", kw: "excel xlsx csv tsv json spreadsheet table markdown convert data" },
-    { id: "password", panel: "password", group: "Utilities", title: "Password generator", desc: "Strong passwords and memorable passphrases.", kw: "password passphrase secure random generate" },
     { id: "words", panel: "words", group: "Utilities", title: "Word counter", desc: "Count words, check post lengths and tidy text.", kw: "word count character count reading time text case uppercase" },
     { id: "dates", panel: "dates", group: "Utilities", title: "Date calculator", desc: "Days between dates, working days and bank holidays.", kw: "date days between working days bank holidays calendar add weeks months" },
-    { id: "privacy", panel: "privacy", group: "Privacy", title: "Remove hidden data", desc: "Strip location, camera and author details before sharing.", kw: "metadata exif gps location clean privacy author" }
+    { id: "privacy", panel: "privacy", group: "Privacy", title: "Remove hidden data", desc: "Strip location, camera and author details before sharing.", kw: "metadata exif gps location clean privacy author" },
+    { id: "password", panel: "password", group: "Privacy", title: "Password generator", desc: "Strong passwords and memorable passphrases.", kw: "password passphrase secure random generate" }
   ];
-  var GROUPS = ["Images", "PDFs", "Utilities", "Privacy"];
-  var PANELS = ["home", "resize", "crop", "bg", "compress", "privacy", "convert", "organise", "sign", "forms", "stamp", "pdfcompress", "batch", "icons", "colours", "qr", "sheets", "password", "words", "dates"];
+  var GROUPS = ["Images", "PDFs", "Video & audio", "Utilities", "Privacy"];
+  var PANELS = ["home", "resize", "crop", "bg", "compress", "privacy", "convert", "organise", "sign", "forms", "stamp", "pdfcompress", "batch", "icons", "colours", "qr", "sheets", "password", "words", "dates", "media"];
   var current = "home";
+
+  // ===== The PocketTool family: one launcher and five focused apps =====
+  var APPS = {
+    pockettool: { name: "PocketTool", cat: "All apps", tagline: "Everyday file tools",
+      heading: "What would you like to do?", sub: "Open an app, or drop a file here and PocketTool opens the right one. Everything runs on your computer; nothing is uploaded.",
+      drop: "Drop any file here", dropSub: "Photos open in Lens, PDFs in Folio, videos and music in Reel, spreadsheets in Kit." },
+    lens: { name: "Lens", group: "Images", cat: "Images", desc: "Resize, crop, compress and convert photos, remove backgrounds, make icons and pick colours.",
+      heading: "What would you like to do with an image?", sub: "Drop a photo and Lens suggests what to do with it, or choose a tool.",
+      drop: "Drop an image here", dropSub: "JPEG, PNG, WebP, GIF, HEIC and more. Or click to choose.",
+      c: ["#0E7490", "#155E75", "#E0F2F6", "#FFFFFF"], d: ["#5CC8DD", "#7DD6E7", "#12313A", "#04181E"], side: ["#0C3440", "#13485A", "#D2EEF5", "#8DB9C6"] },
+    folio: { name: "Folio", group: "PDFs", cat: "PDFs", desc: "Organise, merge, sign and fill in PDFs, add page numbers, and compress them for email.",
+      heading: "What would you like to do with a PDF?", sub: "Drop a PDF and Folio suggests what to do with it, or choose a tool.",
+      drop: "Drop a PDF here", dropSub: "Or click to choose one or more.",
+      c: ["#B4233C", "#8E1B2F", "#FBEAEE", "#FFFFFF"], d: ["#F2849A", "#F6A3B4", "#3A1720", "#22070D"], side: ["#3D0A16", "#52101F", "#F7D9DF", "#D9A7B1"] },
+    reel: { name: "Reel", group: "Video & audio", cat: "Video & audio", desc: "Trim and compress videos, convert video and audio, make GIFs, and pull out the sound.",
+      heading: "What would you like to do with a video or audio file?", sub: "Drop a video or audio file and Reel suggests what to do with it, or choose a tool.",
+      drop: "Drop a video or audio file here", dropSub: "MP4, MOV, WebM, MKV, MP3, M4A, WAV and more. Or click to choose.",
+      c: ["#6D28D9", "#5B21B6", "#EFE9FC", "#FFFFFF"], d: ["#B69CFF", "#C9B6FF", "#2A1E4A", "#140A2B"], side: ["#241047", "#321762", "#E4DBFB", "#B3A4DE"] },
+    kit: { name: "Kit", group: "Utilities", cat: "Utilities", desc: "QR codes, spreadsheet conversions, a word counter and a date calculator with UK bank holidays.",
+      heading: "Everyday utilities", sub: "Make QR codes, convert spreadsheets, count words and work out dates. Drop a spreadsheet or text file, or choose a tool.",
+      drop: "Drop a spreadsheet or text file here", dropSub: "Excel, CSV, JSON or TXT. Or click to choose.",
+      c: ["#B45309", "#92400E", "#FCF1E3", "#FFFFFF"], d: ["#F5A964", "#F8BE85", "#3A2814", "#241303"], side: ["#3B1D05", "#4E2808", "#F8E6CF", "#D6B48E"] },
+    cloak: { name: "Cloak", group: "Privacy", cat: "Privacy", desc: "Remove hidden location and author details from photos and PDFs, and make strong passwords.",
+      heading: "Keep your files private", sub: "Check photos and PDFs for hidden details and remove them before you share, or make a strong password.",
+      drop: "Drop photos or PDFs to check them", dropSub: "Nothing is uploaded; checking happens on your computer.",
+      c: ["#15803D", "#166534", "#E5F4EA", "#FFFFFF"], d: ["#5FD08A", "#82DCA4", "#143322", "#06200F"], side: ["#0B3018", "#114023", "#D5F0DE", "#96C7A6"] }
+  };
+  var APP_ORDER = ["lens", "folio", "reel", "kit", "cloak"];
+  var APP = "pockettool";
+  function appOfTool(t) { if (!t) return null; for (var k in APPS) if (APPS[k].group === t.group) return k; return null; }
+  function inApp(t) { return !!t && appOfTool(t) === APP; }
+  function appIcon(id) { return '<svg viewBox="0 0 64 64" aria-hidden="true"><use href="#' + (id === "pockettool" ? "pt-logo" : "pt-logo-" + id) + '"/></svg>'; }
+  var desktop = window.pocketDesktop && typeof window.pocketDesktop.openApp === "function" ? window.pocketDesktop : null;
+  function themeCSS(id) {
+    var a = APPS[id]; if (!a.c) return "";
+    function block(c, side) {
+      return "--accent:" + c[0] + ";--accent-hover:" + c[1] + ";--accent-tint:" + c[2] + ";--accent-ink:" + c[3] + ";" +
+        "--side:" + side[0] + ";--side-2:" + side[1] + ";--side-ink:" + side[2] + ";--side-dim:" + side[3] + ";";
+    }
+    return ":root{" + block(a.c, a.side) + "}@media (prefers-color-scheme: dark){:root{" + block(a.d, ["#0B0F1C", a.side[0], a.side[2], a.side[3]]) + "}}";
+  }
+  var APP_ICONS = {"lens": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#0E7490\"/><circle cx=\"32\" cy=\"20\" r=\"10.5\" fill=\"#CFFAFE\"/><circle cx=\"32\" cy=\"20\" r=\"5.5\" fill=\"#155E75\"/><circle cx=\"29.6\" cy=\"17.6\" r=\"1.7\" fill=\"#FFFFFF\"/><path d=\"M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z\" fill=\"#FFFFFF\"/><path d=\"M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z\" fill=\"none\" stroke=\"#0E7490\" stroke-opacity=\".4\" stroke-width=\"1.6\" stroke-dasharray=\"2.4 2.2\" stroke-linecap=\"round\"/><circle cx=\"18.6\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/><circle cx=\"45.4\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/></svg>", "folio": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#B4233C\"/><g transform=\"rotate(-9 30 20)\"><rect x=\"19\" y=\"6\" width=\"22\" height=\"27\" rx=\"2\" fill=\"#FBD5DC\"/></g><rect x=\"24\" y=\"8\" width=\"22\" height=\"27\" rx=\"2\" fill=\"#FFF1F3\"/><path d=\"M28 14 H42 M28 18.5 H42 M28 23 H37\" stroke=\"#B4233C\" stroke-width=\"1.8\" stroke-linecap=\"round\"/><path d=\"M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z\" fill=\"#FFFFFF\"/><path d=\"M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z\" fill=\"none\" stroke=\"#B4233C\" stroke-opacity=\".4\" stroke-width=\"1.6\" stroke-dasharray=\"2.4 2.2\" stroke-linecap=\"round\"/><circle cx=\"18.6\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/><circle cx=\"45.4\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/></svg>", "reel": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#6D28D9\"/><circle cx=\"32\" cy=\"20\" r=\"11.5\" fill=\"#EDE9FE\"/><circle cx=\"32\" cy=\"13.5\" r=\"2.6\" fill=\"#6D28D9\"/><circle cx=\"25.5\" cy=\"20\" r=\"2.6\" fill=\"#6D28D9\"/><circle cx=\"38.5\" cy=\"20\" r=\"2.6\" fill=\"#6D28D9\"/><circle cx=\"32\" cy=\"20\" r=\"1.6\" fill=\"#6D28D9\"/><path d=\"M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z\" fill=\"#FFFFFF\"/><path d=\"M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z\" fill=\"none\" stroke=\"#6D28D9\" stroke-opacity=\".4\" stroke-width=\"1.6\" stroke-dasharray=\"2.4 2.2\" stroke-linecap=\"round\"/><circle cx=\"18.6\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/><circle cx=\"45.4\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/></svg>", "kit": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#B45309\"/><g transform=\"rotate(-20 32 22)\"><rect x=\"29.5\" y=\"13\" width=\"5\" height=\"23\" rx=\"2\" fill=\"#FEF3C7\"/><circle cx=\"32\" cy=\"11.5\" r=\"7.5\" fill=\"#FEF3C7\"/><rect x=\"30\" y=\"2.5\" width=\"4\" height=\"8\" fill=\"#B45309\"/></g><path d=\"M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z\" fill=\"#FFFFFF\"/><path d=\"M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z\" fill=\"none\" stroke=\"#B45309\" stroke-opacity=\".4\" stroke-width=\"1.6\" stroke-dasharray=\"2.4 2.2\" stroke-linecap=\"round\"/><circle cx=\"18.6\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/><circle cx=\"45.4\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/></svg>", "cloak": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#15803D\"/><path d=\"M24.5 27 V19.5 a7.5 7.5 0 0 1 15 0 V27\" fill=\"none\" stroke=\"#DCFCE7\" stroke-width=\"4.2\" stroke-linecap=\"round\"/><path d=\"M15 25.5 H49 V39.5 C49 47.5 41.5 52.6 32 55 C22.5 52.6 15 47.5 15 39.5 Z\" fill=\"#FFFFFF\"/><path d=\"M19.2 29.6 H44.8 V39.4 C44.8 45.2 39.4 49.3 32 51.2 C24.6 49.3 19.2 45.2 19.2 39.4 Z\" fill=\"none\" stroke=\"#15803D\" stroke-opacity=\".4\" stroke-width=\"1.6\" stroke-dasharray=\"2.4 2.2\" stroke-linecap=\"round\"/><circle cx=\"18.6\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/><circle cx=\"45.4\" cy=\"29\" r=\"1.9\" fill=\"#E0A93E\"/><circle cx=\"32\" cy=\"37\" r=\"2.8\" fill=\"#15803D\"/><rect x=\"31\" y=\"38\" width=\"2\" height=\"6\" rx=\"1\" fill=\"#15803D\"/></svg>"};
+  function setApp(id, quiet) {
+    if (!APPS[id]) id = "pockettool";
+    APP = id;
+    var a = APPS[id], st = document.getElementById("appTheme");
+    if (!st) { st = document.createElement("style"); st.id = "appTheme"; document.head.appendChild(st); }
+    st.textContent = themeCSS(id);
+    document.body.classList.toggle("launcher", id === "pockettool");
+    document.body.dataset.app = id;
+    // name and logo in the sidebar and the phone header
+    [].forEach.call(document.querySelectorAll(".side .brand .mark use, .topname use"), function (u) { u.setAttribute("href", id === "pockettool" ? "#pt-logo" : "#pt-logo-" + id); });
+    var bn = document.querySelector(".side .bname"); if (bn) bn.textContent = a.name;
+    var tg = document.querySelector(".side .brand .tagline"); if (tg) tg.textContent = id === "pockettool" ? a.tagline : a.cat + ", by PocketTool";
+    var tn = document.querySelector(".topname"); if (tn && tn.lastChild && tn.lastChild.nodeType === 3) tn.lastChild.textContent = a.name;
+    $("navSearch").placeholder = "Find a tool (Ctrl+K)";
+    var fav = document.querySelector('link[rel="icon"]');
+    if (fav && APP_ICONS[id]) fav.href = "data:image/svg+xml," + encodeURIComponent(APP_ICONS[id]);
+    else if (fav && id === "pockettool" && fav.dataset.orig) fav.href = fav.dataset.orig;
+    // home screen wording
+    $("h-home").textContent = a.heading;
+    var sub = $("panel-home").querySelector(".sub"); if (sub) sub.textContent = a.sub;
+    var ds = $("hdrop").querySelectorAll("strong, span:not(.dicon)"); if (ds[0]) ds[0].textContent = a.drop; if (ds[1]) ds[1].textContent = a.dropSub;
+    $("launchHead").hidden = id !== "pockettool";
+    try { var q = id === "pockettool" ? location.pathname : "?app=" + id; history.replaceState(null, "", q + (location.hash || "")); } catch (e) {}
+    buildNav(); buildHome(); buildSwitch(); picked = []; showSuggest();
+    if (!quiet) go("home");
+  }
+  // open another app: its own window on the desktop, or in place in a browser
+  function openApp(id, files, toolId) {
+    if (desktop && id !== APP) {
+      var list = files && files.length ? files : [];
+      Promise.all(list.map(function (f) { return f.arrayBuffer().then(function (b) { return { name: f.name, type: f.type, lastModified: f.lastModified, data: b }; }); }))
+        .then(function (payload) { desktop.openApp(id, payload, toolId || null); });
+      return;
+    }
+    if (id !== APP) setApp(id, true);
+    if (toolId && files && files.length) open(toolId, files);
+    else { go(toolId || "home"); if (files && files.length) pick(files); }
+  }
+  PT.openApp = openApp;
+  PT.apps = APPS;
+  function buildSwitch() {
+    var box = $("appSwitch"); box.innerHTML = "";
+    var lbl = document.createElement("span"); lbl.className = "aslbl"; lbl.textContent = "Switch app"; box.appendChild(lbl);
+    APP_ORDER.forEach(function (id) {
+      var b = document.createElement("button"); b.type = "button"; b.innerHTML = appIcon(id);
+      b.setAttribute("aria-label", APPS[id].name + ", " + APPS[id].cat); b.title = APPS[id].name + " (" + APPS[id].cat + ")";
+      if (id === APP) b.setAttribute("aria-current", "true");
+      b.onclick = function () { if (id !== APP) openApp(id); };
+      box.appendChild(b);
+    });
+    var all = document.createElement("button"); all.type = "button"; all.className = "asall"; all.textContent = "All apps";
+    all.onclick = function () { openApp("pockettool"); }; box.appendChild(all);
+  }
   // Update the address (#tool) where allowed; some previews and embedded views forbid it
   function setHash(id) {
     try { if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id); } catch (e) {}
@@ -6403,6 +7382,11 @@
     password: '<circle cx="8" cy="15" r="4.5"/><path d="M11.3 11.7L20 3M16.5 6.5l3 3M14 9l2 2"/>',
     words: '<path d="M4.5 6h15M4.5 10h15M4.5 14h10M4.5 18h6.5"/>',
     dates: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2"/>',
+    "media-trim": '<circle cx="6.5" cy="6.5" r="2.8"/><circle cx="6.5" cy="17.5" r="2.8"/><path d="M8.6 8.4L20.5 18.5M8.6 15.6L20.5 5.5"/>',
+    "media-compress": '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M10.2 9.4v5.2l4.4-2.6z"/>',
+    "media-convert": '<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M7.5 4.5v15M16.5 4.5v15M3.5 9.5h4M3.5 14.5h4M16.5 9.5h4M16.5 14.5h4"/>',
+    "media-gif": '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M15.6 10.2a4 4 0 1 0 .4 3.3"/><path d="M16.2 7.9v2.6h-2.6"/>',
+    "media-audio": '<path d="M9 17.5V5.5l10-2v12"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/>',
     upload: '<path d="M12 15.5V4M7.5 8.5L12 4l4.5 4.5M4.5 15.5v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/>'
   };
   function icon(id) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (IC[id] || IC.home) + "</svg>"; }
@@ -6431,9 +7415,9 @@
     var nav = $("nav"); nav.innerHTML = "";
     var home = document.createElement("a"); home.className = "navlink"; home.href = "#home"; home.dataset.id = "home"; home.innerHTML = '<span class="ni">' + icon("home") + "</span><span>Home</span>";
     nav.appendChild(home);
-    GROUPS.forEach(function (g) {
+    GROUPS.filter(function (g) { return APP !== "pockettool" && APPS[APP].group === g; }).forEach(function (g) {
       var box = document.createElement("div"); box.className = "navgroup"; box.dataset.group = g;
-      var h = document.createElement("h3"); h.textContent = g; box.appendChild(h);
+      var h = document.createElement("h3"); h.textContent = "Tools"; box.appendChild(h);
       TOOLS.filter(function (t) { return t.group === g; }).forEach(function (t) {
         var a = document.createElement("a"); a.className = "navlink"; a.href = "#" + t.id; a.dataset.id = t.id;
         a.innerHTML = '<span class="ni">' + icon(t.id) + "</span>"; var lab = document.createElement("span"); lab.textContent = t.title; a.appendChild(lab);
@@ -6453,14 +7437,22 @@
 
   // ----- showing a tool -----
   function go(id, quiet) {
-    var t = tool(id), panel = t ? t.panel : "home";
+    var t = tool(id);
+    if (t && !inApp(t)) {
+      var other = appOfTool(t);
+      if (desktop) { openApp(other, null, id); return; }
+      setApp(other, true);
+    }
+    var panel = t ? t.panel : "home";
     if (!t) id = "home";
     current = id;
     PANELS.forEach(function (p) { var el = $("panel-" + p); if (el) el.hidden = p !== panel; });
     document.body.dataset.tab = panel;
-    if (t && t.mode && PT.convert) PT.convert.setMode(t.mode);
+    var modal = { convert: PT.convert, media: PT.media }[panel];
+    if (t && t.mode && modal) modal.setMode(t.mode);
+    if (panel === "media") { $("h-media").textContent = t ? t.title : "Video & audio"; var pm = document.querySelector('.picon[data-panel="media"]'); if (pm && t) pm.innerHTML = icon(t.id); }
     if (panel === "convert") { $("h-convert").textContent = t ? t.title : "Convert"; var pc = document.querySelector('.picon[data-panel="convert"]'); if (pc && t) pc.innerHTML = icon(t.id); }
-    document.title = (t ? t.title + " - " : "") + "PocketTool";
+    document.title = (t ? t.title + " - " : "") + APPS[APP].name;
     markCurrent(); closeMenu();
     if (!quiet) setHash(id);
     window.scrollTo(0, 0);
@@ -6468,16 +7460,19 @@
   PT.go = function (id) { go(id); };
   // keep the sidebar in step when the mode is switched inside the converter
   PT.navSync = function () {
-    if (document.body.dataset.tab !== "convert" || !PT.convert) return;
-    var m = PT.convert.getMode();
-    var t = TOOLS.filter(function (x) { return x.mode === m; })[0];
-    if (t && current !== t.id) { current = t.id; $("h-convert").textContent = t.title; var pc = document.querySelector('.picon[data-panel="convert"]'); if (pc) pc.innerHTML = icon(t.id); markCurrent(); setHash(t.id); document.title = t.title + " - PocketTool"; }
+    var panel = document.body.dataset.tab, api = { convert: PT.convert, media: PT.media }[panel];
+    if (!api) return;
+    var m = api.getMode();
+    var t = TOOLS.filter(function (x) { return x.panel === panel && x.mode === m; })[0];
+    if (t && current !== t.id) { current = t.id; $("h-" + panel).textContent = t.title; var pc = document.querySelector('.picon[data-panel="' + panel + '"]'); if (pc) pc.innerHTML = icon(t.id); markCurrent(); setHash(t.id); document.title = t.title + " - " + APPS[APP].name; }
   };
   $("nav").addEventListener("click", function (e) {
     var a = e.target.closest(".navlink"); if (!a) return;
     e.preventDefault(); go(a.dataset.id);
   });
   $("brandLink").addEventListener("click", function (e) { e.preventDefault(); go("home"); });
+  $("launchUpd").onclick = function () { if (PT.checkUpdates) PT.checkUpdates(true); };
+  (function () { var m = document.querySelector('meta[name="pockettool-version"]'); $("launchVersion").textContent = "Version " + (m ? m.getAttribute("content") : ""); })();
   window.addEventListener("hashchange", function () { go(location.hash.slice(1), true); });
 
   // ----- search -----
@@ -6523,10 +7518,26 @@
     var d = document.createElement("small"); d.textContent = t.desc;
     b.appendChild(h); b.appendChild(d); b.onclick = onClick; return b;
   }
+  function appCard(id, desc, label, onClick) {
+    var a = APPS[id], d = document.createElement("div"); d.className = "appcard";
+    var h = document.createElement("div"); h.className = "ah"; h.innerHTML = appIcon(id);
+    var t = document.createElement("div"), nb = document.createElement("b"), cs = document.createElement("span");
+    nb.textContent = a.name; cs.textContent = a.cat; cs.style.color = a.c[0]; t.appendChild(nb); t.appendChild(cs); h.appendChild(t);
+    var p = document.createElement("p"); p.textContent = desc || a.desc;
+    var b = document.createElement("button"); b.type = "button"; b.className = "appopen"; b.style.background = a.c[0]; b.textContent = label || "Open " + a.name; b.onclick = onClick;
+    d.appendChild(h); d.appendChild(p); d.appendChild(b); return d;
+  }
   function buildHome() {
     var box = $("hAll"); box.innerHTML = "";
-    GROUPS.forEach(function (g) {
-      var h = document.createElement("h3"); h.className = "grouph"; h.textContent = g === "Images" ? "Image tools" : g === "PDFs" ? "PDF tools" : g === "Utilities" ? "Everyday utilities" : g;
+    if (APP === "pockettool") {
+      var hh = document.createElement("h3"); hh.className = "grouph"; hh.textContent = "Your apps";
+      var grid0 = document.createElement("div"); grid0.className = "appcards";
+      APP_ORDER.forEach(function (id) { grid0.appendChild(appCard(id, null, null, function () { openApp(id); })); });
+      box.appendChild(hh); box.appendChild(grid0);
+      return;
+    }
+    GROUPS.filter(function (g) { return APPS[APP].group === g; }).forEach(function (g) {
+      var h = document.createElement("h3"); h.className = "grouph"; h.textContent = "All " + APPS[APP].name + " tools";
       var grid = document.createElement("div"); grid.className = "cards";
       TOOLS.filter(function (t) { return t.group === g; }).forEach(function (t) { grid.appendChild(card(t, "", function () { go(t.id); })); });
       box.appendChild(h); box.appendChild(grid);
@@ -6536,9 +7547,10 @@
   // ----- home: suggestions for dropped files -----
   var picked = [];
   function isPdf(f) { return f.type === "application/pdf" || /\.pdf$/i.test(f.name || ""); }
+  function isMediaFile(f) { return PT.media && PT.media.isMedia(f); }
   function isData(f) { return /\.(csv|tsv|xlsx|xlsm|json|txt|md)$/i.test(f.name || "") || /^(text\/|application\/json)/.test(f.type) || /spreadsheetml/.test(f.type); }
   function open(id, files) {
-    var imgs = files.filter(PT.isImage), pdfs = files.filter(isPdf), data = files.filter(isData);
+    var imgs = files.filter(PT.isImage), pdfs = files.filter(isPdf), data = files.filter(isData), media = files.filter(isMediaFile);
     go(id);
     if (id === "resize" && window.__resizeLoad) window.__resizeLoad(imgs[0]);
     else if (id === "crop" && window.__cropLoad) window.__cropLoad(imgs[0]);
@@ -6546,6 +7558,7 @@
     else if (id === "compress" && window.__compressAdd) window.__compressAdd(imgs);
     else if (id === "privacy" && window.__privacyAdd) window.__privacyAdd(imgs.concat(pdfs));
     else if (id === "convert-img" || id === "img2pdf") PT.convert.add(tool(id).mode, imgs);
+    else if (/^media-/.test(id) && PT.media) PT.media.add(tool(id).mode, media);
     else if (id === "sheets" && window.__sheetsLoad) window.__sheetsLoad(data[0]);
     else if (id === "words" && window.__wordsLoad) window.__wordsLoad(data.filter(function (f) { return /\.(txt|md|csv)$/i.test(f.name) || /^text\//.test(f.type); })[0] || data[0]);
     else if (id === "batch" && window.__batchAdd) window.__batchAdd(imgs);
@@ -6563,20 +7576,46 @@
     picked = []; showSuggest();
   }
   function showSuggest() {
-    var imgs = picked.filter(PT.isImage), pdfs = picked.filter(isPdf), data = picked.filter(isData), other = picked.length - imgs.length - pdfs.length - data.length;
+    var imgs = picked.filter(PT.isImage), pdfs = picked.filter(isPdf), media = picked.filter(isMediaFile), data = picked.filter(function (f) { return isData(f) && !isMediaFile(f); });
+    var other = picked.length - imgs.length - pdfs.length - data.length - media.length;
     $("hSuggest").hidden = !picked.length; $("hdrop").hidden = !!picked.length;
     if (!picked.length) return;
     var names = picked.length === 1 ? "“" + picked[0].name + "”" : picked.length + " files";
     $("hFiles").textContent = "What do you want to do with " + names + "?" + (other ? " (" + other + " couldn’t be used)" : "");
     var box = $("hGroups"); box.innerHTML = "";
+    // The launcher sends files to the right app (straight away if they all belong to one app)
+    if (APP === "pockettool") {
+      var kinds = [];
+      if (imgs.length) kinds.push(["lens", imgs, imgs.length === 1 ? "Edit, compress or convert this image." : "Work with these " + imgs.length + " images."]);
+      if (pdfs.length) kinds.push(["folio", pdfs, pdfs.length === 1 ? "Sign, organise or compress this PDF." : "Merge or work with these " + pdfs.length + " PDFs."]);
+      if (media.length) kinds.push(["reel", media, "Trim, compress or convert this " + (media.length === 1 ? "file." : "file (the first of " + media.length + ").")]);
+      if (data.length) kinds.push(["kit", data, "Convert this spreadsheet, or count its words."]);
+      if (kinds.length === 1 && !other) { var only = kinds[0]; picked = []; showSuggest(); openApp(only[0], only[1]); return; }
+      if (kinds.length) {
+        var hh = document.createElement("h3"); hh.className = "grouph"; hh.textContent = "Open them in";
+        var g0 = document.createElement("div"); g0.className = "appcards";
+        kinds.forEach(function (k) { g0.appendChild(appCard(k[0], k[2], "Open in " + APPS[k[0]].name, function () { openApp(k[0], k[1]); })); });
+        box.appendChild(hh); box.appendChild(g0);
+      }
+    }
     function group(title, ids, files, notes) {
-      if (!ids.length) return;
-      var h = document.createElement("h3"); h.className = "grouph"; h.textContent = title;
+      if (APP === "pockettool") return;
+      if (APP === "cloak") ids = ids.filter(function (id) { return id === "privacy"; });
+      var mine = ids.filter(function (id) { return inApp(tool(id)); }), elsewhere = ids.filter(function (id) { return !inApp(tool(id)); });
+      if (!mine.length && !elsewhere.length) return;
+      var h = document.createElement("h3"); h.className = "grouph"; h.textContent = mine.length ? title : title + ", in another app";
       var grid = document.createElement("div"); grid.className = "cards";
-      ids.forEach(function (id, i) {
+      mine.forEach(function (id, i) {
         var t = tool(id), c = Object.assign({}, t);
         if (notes && notes[id]) c.desc = notes[id];
         grid.appendChild(card(c, i === 0 ? "go2" : "", function () { open(id, files); }));
+      });
+      elsewhere.forEach(function (id) {
+        var t = tool(id), app = appOfTool(t), c = Object.assign({}, t);
+        c.title = t.title + " (in " + APPS[app].name + ")";
+        var b = card(c, "", function () { openApp(app, files, id); });
+        var ci = b.querySelector(".ci"); ci.className = "ci appci"; ci.innerHTML = appIcon(app);
+        grid.appendChild(b);
       });
       box.appendChild(h); box.appendChild(grid);
     }
@@ -6595,14 +7634,20 @@
           pdfcompress: multi ? "Make all " + pdfs.length + " PDFs smaller." : "Make it smaller for email.",
           privacy: "Remove the author, software and date details." });
     }
+    if (media.length) {
+      var audioOnly = media.every(function (f) { return /^audio\//.test(f.type) || /\.(mp3|m4a|aac|wav|ogg|oga|opus|flac|wma|aiff?)$/i.test(f.name); });
+      group(imgs.length || pdfs.length || data.length ? (audioOnly ? "For the audio" : "For the video") : "Suggested tools",
+        audioOnly ? ["media-trim", "media-convert"] : ["media-trim", "media-compress", "media-gif", "media-convert", "media-audio"], media,
+        media.length > 1 ? { "media-trim": "Works on one file at a time; this opens the first." } : null);
+    }
     if (data.length) {
       var isText = data.every(function (f) { return /\.(txt|md)$/i.test(f.name); });
       group(imgs.length || pdfs.length ? "For the data file" : "Suggested tools", isText ? ["words", "sheets"] : ["sheets", "words"], data,
         { sheets: "Preview it and convert to Excel, CSV, JSON or Markdown.", words: "Count its words and characters." });
     }
-    if (!imgs.length && !pdfs.length && !data.length) {
+    if (!imgs.length && !pdfs.length && !data.length && !media.length) {
       var p = document.createElement("p"); p.className = "note err";
-      p.textContent = "PocketTool can’t open these files. It works with images (JPEG, PNG, WebP, GIF, HEIC and more), PDFs, and spreadsheets or text (Excel, CSV, JSON, TXT).";
+      p.textContent = "PocketTool can’t open these files. Its apps work with images (JPEG, PNG, WebP, GIF, HEIC and more), PDFs, video and audio, and spreadsheets or text (Excel, CSV, JSON, TXT).";
       box.appendChild(p);
     }
   }
@@ -6624,8 +7669,9 @@
              "sigInk", "fFlatten", "stNum", "stPos", "stStyle", "stSize", "stSkip", "stWm", "stWmText", "stWmDir", "stWmSize", "stWmOp", "stWmCol", "pcZip",
              "btMode", "btPct", "btW", "btH", "btFill", "btPadCol", "btNoUp", "btFmt", "btQ", "btZip", "icPad", "icCol", "icFav", "icApple", "icPwa", "icWin", "icPng",
              "qrEcc", "qrFg", "qrBg", "qrStyle", "qrSize", "pwLen", "pwUpper", "pwLower", "pwDigits", "pwSymbols", "pwSimilar", "ppWords", "ppSep", "ppCaps", "ppNum",
-             "shOutFmt", "shHeaders", "shBom", "shNums", "dRegion", "dIncEnd"];
-  var GROUP_ATTRS = ["data-m", "data-goal", "data-subj", "data-edge", "data-bg", "data-r", "data-pl", "data-pm", "data-ishape", "data-ifit", "data-ibg", "data-pal", "data-pwmode"];
+             "shOutFmt", "shHeaders", "shBom", "shNums", "dRegion", "dIncEnd",
+             "mdTrimMode", "mdConvTo", "mdQ", "mdSize", "mdRes", "mdMute", "mdGifW", "mdGifFps", "mdGifLoop", "mdAudFmt", "bClean"];
+  var GROUP_ATTRS = ["data-m", "data-goal", "data-subj", "data-edge", "data-bg", "data-r", "data-pl", "data-pm", "data-ishape", "data-ifit", "data-ibg", "data-pal", "data-pwmode", "data-mdgoal"];
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   function store() { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
@@ -6657,8 +7703,19 @@
   });
   $("hResetSettings").onclick = function () { try { localStorage.removeItem(KEY); } catch (e) {} setHash("home"); location.reload(); };
 
-  buildNav(); buildHome(); decorate();
-  go(location.hash.slice(1) || "home", true);
+  decorate();
+  var fav0 = document.querySelector('link[rel="icon"]'); if (fav0) fav0.dataset.orig = fav0.href;
+  var startApp = (/[?&]app=([a-z]+)/.exec(location.search) || [])[1];
+  var startTool = tool(location.hash.slice(1));
+  if (!startApp && startTool) startApp = appOfTool(startTool);      // old links like #compress still work
+  setApp(startApp || "pockettool", true);
+  go(startTool && inApp(startTool) ? startTool.id : "home", true);
+  // the desktop app hands files (and sometimes a tool) to this window
+  if (desktop && typeof desktop.onFiles === "function") desktop.onFiles(function (msg) {
+    var files = (msg.files || []).map(function (f) { return new File([f.data], f.name, { type: f.type, lastModified: f.lastModified }); });
+    if (msg.tool && tool(msg.tool) && inApp(tool(msg.tool))) { if (files.length) open(msg.tool, files); else go(msg.tool); }
+    else if (files.length) { go("home"); pick(files); }
+  });
 })();
 </script>
 </body>
