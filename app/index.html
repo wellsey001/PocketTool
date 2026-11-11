@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="pockettool-version" content="2.0.0">
+<meta name="pockettool-version" content="2.2.0">
 <meta name="pockettool-repo" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PocketTool</title>
@@ -511,6 +511,7 @@
   .updfoot { justify-content: flex-end; margin-top: 12px; }
   /* ===== the PocketTool family ===== */
   body.launcher .side, body.launcher .topbar, body.launcher .scrim { display: none !important; }
+  body.solo .appswitch { display: none !important; }
   @media (min-width: 861px) { body.launcher .shell { grid-template-columns: minmax(0, 1fr); } }
   /* full width, edge to edge, with its contents lined up with the page column */
   .launchhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: -34px calc(50% - 50vw) 30px; padding: 14px calc(50vw - 50%); background: var(--side); color: #fff; }
@@ -543,6 +544,11 @@
   .appswitch .asall { font: inherit; font-size: .82rem; color: var(--side-ink); background: none; border: 0; cursor: pointer; padding: 6px 2px 0; text-decoration: underline; text-underline-offset: 3px; width: 100%; text-align: left; white-space: nowrap; }
   .sideupd { flex-wrap: wrap; }
   .updbtn { white-space: nowrap; }
+  .pkglist { margin: 0 0 14px; padding-left: 20px; color: var(--ink); font-size: .92rem; line-height: 1.6; }
+  .pkgsection { margin-top: 10px; }
+  .pkgrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px; box-shadow: var(--shadow); }
+  .pkgrow b { display: block; font-weight: 600; }
+  .pkgrow span { display: block; color: var(--muted); font-size: .9rem; margin-top: 2px; }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -578,6 +584,20 @@
     </div>
   </aside>
   <div class="scrim" id="scrim" hidden></div>
+  <dialog class="upd" id="pkgDialog" aria-labelledby="pkgTitle">
+    <h2 id="pkgTitle">Extra packages</h2>
+    <p id="pkgMsg" role="status"></p>
+    <ul class="pkglist" id="pkgList" hidden></ul>
+    <div class="progress" id="pkgProg" hidden><div id="pkgFill"></div></div>
+    <div class="btns">
+      <button type="button" class="go" id="pkgYes" style="margin-top:0" hidden>Yes, download</button>
+      <button type="button" class="ghostbtn" id="pkgStop" hidden>Stop</button>
+    </div>
+    <div class="btns updfoot">
+      <button type="button" class="linkbtn" id="pkgNo" hidden>Not now</button>
+      <button type="button" class="ghostbtn" id="pkgClose" hidden>Close</button>
+    </div>
+  </dialog>
   <dialog class="upd" id="updDialog" aria-labelledby="updTitle">
     <h2 id="updTitle">Updates</h2>
     <p id="updMsg"></p>
@@ -618,6 +638,10 @@
       <div id="hGroups"></div>
     </div>
     <div id="hAll"></div>
+    <div class="pkgsection" id="pkgSection" hidden>
+      <h3 class="grouph">Extra packages</h3>
+      <div class="pkgrow"><div><b>AI background remover</b><span id="pkgState">Checking…</span></div><button type="button" class="ghostbtn" id="pkgOpen">Download</button></div>
+    </div>
     <p class="about"><button type="button" class="linkbtn" id="hResetSettings">Reset saved settings</button>
       PocketTool remembers your choices, like formats and sizes, between visits.</p>
   </section>
@@ -4311,6 +4335,10 @@
 
   // ----- running the AI -----
   $("bRun").onclick = function () {
+    if (window.PT.packages && !window.PT.packages.ready()) {
+      window.PT.packages.ensure().then(function (ok) { if (ok) $("bRun").click(); else note("Remove background needs the extra packages. You can download them from the PocketTool launcher.", true); });
+      return;
+    }
     if (!src || busy) return;
     busy = true; $("bRun").disabled = true; $("bProg").hidden = false; $("bProgFill").style.width = "0%";
     $("bRun").textContent = "Loading the AI…"; note("");
@@ -7141,7 +7169,10 @@
   function isDesktop() { return location.protocol === "app:"; }
   function pickAsset(assets) {
     assets = assets || [];
-    var p = platform(), rx = !isDesktop() ? /^pockettool\.html$/i : p === "win" ? /setup.*\.exe$/i : p === "linux" ? /\.appimage$/i : null;
+    var sm = document.querySelector('meta[name="pockettool-solo"]');
+    var solo = (sm && sm.getAttribute("content")) || (/[?&]solo=1(&|$)/.test(location.search) && (/[?&]app=([a-z]+)/.exec(location.search) || [])[1]);
+    var name = solo ? solo.charAt(0).toUpperCase() + solo.slice(1) : "PocketTool";
+    var p = platform(), rx = !isDesktop() ? /^pockettool\.html$/i : p === "win" ? new RegExp("^" + name + "-Setup.*\\.exe$", "i") : p === "linux" ? new RegExp("^" + name + "-.*\\.appimage$", "i") : null;
     return (rx && assets.filter(function (a) { return rx.test(a.name); })[0]) || null;
   }
   function plainNotes(md) {
@@ -7283,6 +7314,10 @@
   };
   var APP_ORDER = ["lens", "folio", "reel", "kit", "cloak"];
   var APP = "pockettool";
+  // A single app installed on its own (for example Folio.exe): set by the address, or built into the page
+  var SOLO_META = (function () { var m = document.querySelector('meta[name="pockettool-solo"]'); return m ? (m.getAttribute("content") || "").trim() : ""; })();
+  var SOLO = /[?&]solo=1(&|$)/.test(location.search) || !!SOLO_META;
+  PT.solo = SOLO;
   function appOfTool(t) { if (!t) return null; for (var k in APPS) if (APPS[k].group === t.group) return k; return null; }
   function inApp(t) { return !!t && appOfTool(t) === APP; }
   function appIcon(id) { return '<svg viewBox="0 0 64 64" aria-hidden="true"><use href="#' + (id === "pockettool" ? "pt-logo" : "pt-logo-" + id) + '"/></svg>'; }
@@ -7318,12 +7353,14 @@
     var sub = $("panel-home").querySelector(".sub"); if (sub) sub.textContent = a.sub;
     var ds = $("hdrop").querySelectorAll("strong, span:not(.dicon)"); if (ds[0]) ds[0].textContent = a.drop; if (ds[1]) ds[1].textContent = a.dropSub;
     $("launchHead").hidden = id !== "pockettool";
-    try { var q = id === "pockettool" ? location.pathname : "?app=" + id; history.replaceState(null, "", q + (location.hash || "")); } catch (e) {}
+    try { var q = id === "pockettool" ? location.pathname : "?app=" + id + (SOLO ? "&solo=1" : ""); history.replaceState(null, "", q + (location.hash || "")); } catch (e) {}
+    document.body.classList.toggle("solo", SOLO);
     buildNav(); buildHome(); buildSwitch(); picked = []; showSuggest();
     if (!quiet) go("home");
   }
   // open another app: its own window on the desktop, or in place in a browser
   function openApp(id, files, toolId) {
+    if (SOLO && id !== APP) return;            // other apps aren't installed alongside a standalone app
     if (desktop && id !== APP) {
       var list = files && files.length ? files : [];
       Promise.all(list.map(function (f) { return f.arrayBuffer().then(function (b) { return { name: f.name, type: f.type, lastModified: f.lastModified, data: b }; }); }))
@@ -7438,6 +7475,7 @@
   // ----- showing a tool -----
   function go(id, quiet) {
     var t = tool(id);
+    if (t && !inApp(t) && SOLO) { t = null; id = "home"; }
     if (t && !inApp(t)) {
       var other = appOfTool(t);
       if (desktop) { openApp(other, null, id); return; }
@@ -7601,7 +7639,7 @@
     function group(title, ids, files, notes) {
       if (APP === "pockettool") return;
       if (APP === "cloak") ids = ids.filter(function (id) { return id === "privacy"; });
-      var mine = ids.filter(function (id) { return inApp(tool(id)); }), elsewhere = ids.filter(function (id) { return !inApp(tool(id)); });
+      var mine = ids.filter(function (id) { return inApp(tool(id)); }), elsewhere = SOLO ? [] : ids.filter(function (id) { return !inApp(tool(id)); });
       if (!mine.length && !elsewhere.length) return;
       var h = document.createElement("h3"); h.className = "grouph"; h.textContent = mine.length ? title : title + ", in another app";
       var grid = document.createElement("div"); grid.className = "cards";
@@ -7644,6 +7682,12 @@
       var isText = data.every(function (f) { return /\.(txt|md)$/i.test(f.name); });
       group(imgs.length || pdfs.length ? "For the data file" : "Suggested tools", isText ? ["words", "sheets"] : ["sheets", "words"], data,
         { sheets: "Preview it and convert to Excel, CSV, JSON or Markdown.", words: "Count its words and characters." });
+    }
+    if (SOLO && !box.children.length && picked.length) {
+      var sp = document.createElement("p"); sp.className = "note err";
+      sp.textContent = APPS[APP].name + " can’t open " + (picked.length === 1 ? "this file" : "these files") + ". " +
+        { folio: "It works with PDFs, and with images to turn into PDFs.", lens: "It works with images.", reel: "It works with video and audio files.", kit: "It works with spreadsheets and text files.", cloak: "It works with photos and PDFs." }[APP];
+      box.appendChild(sp);
     }
     if (!imgs.length && !pdfs.length && !data.length && !media.length) {
       var p = document.createElement("p"); p.className = "note err";
@@ -7705,7 +7749,7 @@
 
   decorate();
   var fav0 = document.querySelector('link[rel="icon"]'); if (fav0) fav0.dataset.orig = fav0.href;
-  var startApp = (/[?&]app=([a-z]+)/.exec(location.search) || [])[1];
+  var startApp = SOLO_META && APPS[SOLO_META] ? SOLO_META : (/[?&]app=([a-z]+)/.exec(location.search) || [])[1];
   var startTool = tool(location.hash.slice(1));
   if (!startApp && startTool) startApp = appOfTool(startTool);      // old links like #compress still work
   setApp(startApp || "pockettool", true);
@@ -7718,5 +7762,140 @@
   });
 })();
 </script>
+<script>
+(function () {
+  "use strict";
+  // ===== Extra packages (desktop app only): the AI models for Remove background =====
+  var $ = function (id) { return document.getElementById(id); };
+  var PT = window.PT;
+  var api = window.pocketDesktop && window.pocketDesktop.packages;
+  if (!api) return;                         // the web version downloads models when a tool first needs them
+  var KEY = "pockettool:packages", prefs = {};
+  try { prefs = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { prefs = {}; }
+  function savePrefs() { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch (e) {} }
+  var state = [], gpu = null, busy = false, waiting = [], lastProgress = null;
+  function hasGPU() {
+    if (gpu !== null) return Promise.resolve(gpu);
+    if (!navigator.gpu || !navigator.gpu.requestAdapter) { gpu = false; return Promise.resolve(false); }
+    return navigator.gpu.requestAdapter().then(function (a) { gpu = !!a; return gpu; }, function () { gpu = false; return false; });
+  }
+  function needed() { return gpu ? ["bg-standard", "bg-best", "bg-people"] : ["bg-standard-cpu", "bg-people"]; }
+  function missing() { return needed().filter(function (id) { var s = state.filter(function (x) { return x.id === id; })[0]; return !s || !s.installed; }); }
+  function refresh() { return Promise.all([hasGPU(), api.status()]).then(function (r) { state = r[1] || []; render(); return state; }); }
+  function ready() { return gpu !== null && missing().length === 0; }
+  function mb(n) { return n >= 1e9 ? (n / 1e9).toFixed(1) + " GB" : Math.max(1, Math.round(n / 1e6)) + " MB"; }
+
+  // ----- the dialog -----
+  var D = $("pkgDialog");
+  function open() { if (!D.open) { if (D.showModal) D.showModal(); else D.setAttribute("open", ""); } }
+  function close() { if (D.open) { if (D.close) D.close(); else D.removeAttribute("open"); } }
+  function view(o) {
+    $("pkgTitle").textContent = o.title; $("pkgMsg").textContent = o.msg || "";
+    $("pkgList").hidden = !o.list; if (o.list) $("pkgList").innerHTML = o.list;
+    $("pkgProg").hidden = !o.progress;
+    $("pkgYes").hidden = !o.yes; if (o.yes) $("pkgYes").textContent = o.yes;
+    $("pkgNo").hidden = !o.no; if (o.no) $("pkgNo").textContent = o.no;
+    $("pkgStop").hidden = !o.stop; $("pkgClose").hidden = !o.close; if (o.close) $("pkgClose").textContent = o.close;
+  }
+  function listFor(ids) {
+    return ids.map(function (id) {
+      var s = state.filter(function (x) { return x.id === id; })[0];
+      return "<li>" + (s ? s.name.replace(/&/g, "&amp;").replace(/</g, "&lt;") : id) + "</li>";
+    }).join("");
+  }
+  function ask(reason) {
+    var ids = missing();
+    if (!ids.length) { view({ title: "Extra packages are installed", msg: "The AI background remover is ready and works offline." + (busy ? "" : " You can remove the packages to free up space."), close: "Close", no: busy ? null : "Remove packages" }); $("pkgNo").dataset.act = "remove"; open(); return; }
+    view({ title: reason === "tool" ? "Remove background needs the AI package" : "Download the extra packages?",
+      msg: "PocketTool’s AI background remover needs extra files. They’re downloaded once from Hugging Face, checked, and kept on this computer, so the tool then works offline. Working out the size…",
+      list: listFor(ids), yes: "Yes, download", no: "Not now" });
+    $("pkgNo").dataset.act = "later";
+    open();
+    api.sizes(ids).then(function (n) {
+      if ($("pkgYes").hidden) return;
+      $("pkgMsg").textContent = "PocketTool’s AI background remover needs extra files: about " + mb(n) + " for this computer" + (gpu ? "" : " (a smaller set, as this computer has no graphics card PocketTool can use)") +
+        ". They’re downloaded once from Hugging Face, checked, and kept on this computer, so the tool then works offline. You can keep using PocketTool while they download.";
+    }, function () {
+      if (!$("pkgYes").hidden) $("pkgMsg").textContent = "PocketTool’s AI background remover needs extra files (a few hundred MB). PocketTool couldn’t reach Hugging Face to check the exact size; check your internet connection.";
+    });
+  }
+  function start() {
+    var ids = missing(); if (!ids.length || busy) return;
+    busy = true; prefs.asked = true; savePrefs();
+    view({ title: "Downloading the extra packages", msg: "Starting…", progress: true, stop: true, close: "Keep using PocketTool" });
+    $("pkgFill").style.width = "0%"; render();
+    api.download(ids).then(function (r) {
+      busy = false;
+      return refresh().then(function () {
+        if (r && r.ok) {
+          view({ title: "All set", msg: "The extra packages are installed. The AI background remover now works offline.", close: "Close" });
+          settle(true);
+        } else if (r && r.cancelled) {
+          view({ title: "Download stopped", msg: "What was downloaded is kept, so downloading again carries on from where it stopped.", yes: "Carry on downloading", close: "Close" });
+        } else {
+          view({ title: "The download didn’t finish", msg: ((r && r.message) || "Something went wrong.") + " Check your internet connection and try again; it carries on from where it stopped.", yes: "Try again", close: "Close" });
+        }
+      });
+    });
+  }
+  function settle(ok) { var w = waiting; waiting = []; w.forEach(function (f) { f(ok); }); }
+  api.onProgress(function (p) {
+    lastProgress = p;
+    if (p.state === "downloading" || p.state === "checking") {
+      var pct = p.total ? Math.min(100, p.got / p.total * 100) : 0;
+      $("pkgFill").style.width = pct.toFixed(1) + "%";
+      $("pkgMsg").textContent = (p.state === "checking" ? "Checking " : "Downloading ") + (p.name || "") + "… " + mb(p.got) + " of " + mb(p.total) + " (" + Math.floor(pct) + "%)";
+    }
+    if (p.state === "removed") refresh();
+    render();
+  });
+  $("pkgYes").onclick = start;
+  $("pkgStop").onclick = function () { api.cancel(); };
+  $("pkgClose").onclick = function () { close(); if (!busy && !ready()) settle(false); };
+  $("pkgNo").onclick = function () {
+    if (this.dataset.act === "remove") {
+      api.remove(needed().concat(["bg-standard", "bg-standard-cpu", "bg-best", "bg-people"])).then(refresh).then(function () { close(); });
+      return;
+    }
+    prefs.asked = true; savePrefs(); close(); settle(false);
+    if (PT.toast) PT.toast("You can download them later from the PocketTool launcher.");
+  };
+  D.addEventListener("cancel", function () { if (!busy && !ready()) settle(false); });
+
+  // ----- the Extra packages section in the launcher -----
+  function render() {
+    var box = $("pkgSection"); if (!box) return;
+    box.hidden = document.body.dataset.app !== "pockettool";
+    if (gpu === null) return;
+    var miss = missing(), have = state.filter(function (s) { return s.installed && needed().indexOf(s.id) >= 0; }).reduce(function (n, s) { return n + s.bytes; }, 0);
+    var txt, btn;
+    if (busy) {
+      var p = lastProgress && lastProgress.total ? Math.floor(lastProgress.got / lastProgress.total * 100) : 0;
+      txt = "Downloading… " + p + "%"; btn = "Show progress";
+    } else if (!miss.length) { txt = "Installed (" + mb(have) + "). The AI background remover works offline."; btn = "Manage"; }
+    else { txt = "Not installed. The AI background remover needs these extra files."; btn = "Download"; }
+    $("pkgState").textContent = txt; $("pkgOpen").textContent = btn;
+  }
+  $("pkgOpen").onclick = function () { if (busy) { view({ title: "Downloading the extra packages", msg: $("pkgMsg").textContent, progress: true, stop: true, close: "Keep using PocketTool" }); open(); } else ask(); };
+
+  PT.packages = {
+    ready: ready,
+    show: function () { refresh().then(function () { busy ? $("pkgOpen").click() : ask(); }); },
+    // used by Remove background: resolves true once the packages are installed
+    ensure: function () {
+      return refresh().then(function () {
+        if (ready()) return true;
+        return new Promise(function (res) { waiting.push(res); if (busy) $("pkgOpen").click(); else ask("tool"); });
+      });
+    }
+  };
+  // switching apps in place re-checks whether the section should show
+  new MutationObserver(render).observe(document.body, { attributes: true, attributeFilter: ["data-app"] });
+  refresh().then(function () {
+    if (!prefs.asked && !ready() && document.body.dataset.app === "pockettool") setTimeout(function () { if (!D.open && !$("updDialog").open) ask("first"); }, 900);
+  });
+})();
+</script>
+
 </body>
 </html>

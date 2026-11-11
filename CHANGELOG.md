@@ -1,5 +1,19 @@
 # Changes
 
+## 2.2.0
+
+- New: Folio on its own for Windows. Folio-Setup.exe installs just the PDF app as a standalone program, with its own Start menu entry, desktop shortcut, taskbar icon and settings. It includes only what Folio needs, so it's a small download.
+- A standalone Folio opens straight into Folio, with no app switcher and no suggestions for apps that aren't installed, and its update check offers the Folio installer.
+- Fix: the family's update check now always offers the PocketTool installer, never another program's.
+- Every Windows build now produces both PocketTool and Folio; build-folio.bat (or npm run dist:folio) builds Folio alone.
+
+## 2.1.0
+
+- The desktop download is much smaller: the background remover's AI models are no longer built in.
+- On first open, PocketTool asks whether to download these extra packages, showing the size for your computer (about 670 MB with a graphics card, about 270 MB without). Downloads show progress, can be stopped and carried on, resume after interruptions, and every file is checked against its published fingerprint.
+- "Not now" is remembered; Lens's background remover asks again when it's needed, and the launcher's new Extra packages section (also Help > Extra packages…) downloads or removes them at any time.
+- The web version is unchanged.
+
 ## 2.0.0
 
 - PocketTool is now a family: the PocketTool launcher and five focused apps, each with its own name, icon, colour and home screen: Lens (images), Folio (PDFs), Reel (video and audio), Kit (utilities) and Cloak (privacy).

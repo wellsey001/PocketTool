@@ -10,6 +10,7 @@ const crypto = require("crypto");
 const { pathToFileURL } = require("url");
 const { Readable } = require("stream");
 const offline = require("./offline");
+const packages = require("./packages");
 
 // Let the AI tools use the graphics card on more computers.
 app.commandLine.appendSwitch("enable-unsafe-webgpu");
@@ -21,7 +22,7 @@ protocol.registerSchemesAsPrivileged([
 
 const OFFLINE_DIR = app.isPackaged ? path.join(process.resourcesPath, "offline") : path.join(__dirname, "offline");
 const CACHE_HOSTS = ["cdn.jsdelivr.net", "unpkg.com", "cdnjs.cloudflare.com", "fonts.googleapis.com", "fonts.gstatic.com", "huggingface.co"];
-let cacheDir = "";
+let cacheDir = "", PACKAGES_DIR = "", pkgs = null;
 
 function isCacheHost(host) { return CACHE_HOSTS.includes(host) || host.endsWith(".huggingface.co") || host.endsWith(".hf.co"); }
 
@@ -65,8 +66,8 @@ async function handleHttps(request) {
     return new Response("offline", { status: 503 });
   }
 
-  // 1. Bundled with the app
-  const local = offline.resolve(OFFLINE_DIR, request.url);
+  // 1. Bundled with the app, or downloaded as an extra package
+  const local = offline.resolve(OFFLINE_DIR, request.url) || (PACKAGES_DIR && offline.resolve(PACKAGES_DIR, request.url));
   if (local) return serveFile(local);
 
   if (!isCacheHost(u.hostname)) return net.fetch(request, { bypassCustomProtocolHandlers: true });
@@ -96,6 +97,8 @@ function folderSize(dir) {
 // ---------- the PocketTool family: one window per app ----------
 const APPS = { pockettool: "PocketTool", lens: "Lens", folio: "Folio", reel: "Reel", kit: "Kit", cloak: "Cloak" };
 const windows = {};
+// A standalone build (for example Folio.exe) sets "pocketSolo" in its package.json: it then runs just that app.
+const SOLO = (() => { try { const id = require("./package.json").pocketSolo; return APPS[id] && id !== "pockettool" ? id : null; } catch { return null; } })();
 
 function appFromArgs(argv) {
   const arg = (argv || []).find((a) => /^--app=/.test(a));
@@ -107,6 +110,7 @@ function iconFile(id, ext) {
   return path.join(__dirname, "app", "icons", id + ".png");
 }
 function openApp(id, message) {
+  if (SOLO) id = SOLO;
   if (!APPS[id]) id = "pockettool";
   let win = windows[id];
   if (win && !win.isDestroyed()) {               // already open: bring it forward
@@ -126,11 +130,12 @@ function openApp(id, message) {
   // On Windows, give each app its own taskbar button and icon
   if (process.platform === "win32") {
     try {
-      win.setAppDetails({ appId: id === "pockettool" ? "com.pockettool.app" : "com.pockettool." + id, appIconPath: iconFile(id, "ico"), appIconIndex: 0,
-        relaunchCommand: '"' + process.execPath + '" --app=' + id, relaunchDisplayName: APPS[id] });
+      win.setAppDetails({ appId: SOLO ? "com.pockettool.solo." + SOLO : id === "pockettool" ? "com.pockettool.app" : "com.pockettool." + id,
+        appIconPath: iconFile(id, "ico"), appIconIndex: 0,
+        relaunchCommand: '"' + process.execPath + '"' + (SOLO ? "" : " --app=" + id), relaunchDisplayName: APPS[id] });
     } catch (e) { console.warn("setAppDetails:", e.message); }
   }
-  win.loadURL("app://pockettool/index.html" + (id === "pockettool" ? "" : "?app=" + id));
+  win.loadURL("app://pockettool/index.html" + (id === "pockettool" ? "" : "?app=" + id + (SOLO ? "&solo=1" : "")));
   if (message) win.webContents.once("did-finish-load", () => setTimeout(() => { if (!win.isDestroyed()) win.webContents.send("files", message); }, 300));
   // Links open in the normal web browser, not inside PocketTool.
   win.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: "deny" }; });
@@ -139,6 +144,15 @@ function openApp(id, message) {
   win.on("closed", () => { if (windows[id] === win) delete windows[id]; });
   return win;
 }
+// ---------- extra packages (the AI models), downloaded only with the user's agreement ----------
+function packageIds(ids) { const known = new Set(packages.PACKAGES.map((p) => p.id)); return (Array.isArray(ids) ? ids : []).filter((id) => known.has(id)); }
+function broadcast(channel, data) { for (const w of BrowserWindow.getAllWindows()) if (!w.isDestroyed()) w.webContents.send(channel, data); }
+ipcMain.handle("packages:status", () => pkgs.status());
+ipcMain.handle("packages:sizes", (_e, ids) => pkgs.sizes(packageIds(ids)));
+ipcMain.handle("packages:download", (_e, ids) => pkgs.download(packageIds(ids), (progress) => broadcast("packages:progress", progress)));
+ipcMain.handle("packages:cancel", () => { pkgs.cancel(); return true; });
+ipcMain.handle("packages:remove", (_e, ids) => { if (pkgs.busy()) throw new Error("Wait for the download to finish first."); const st = pkgs.remove(packageIds(ids)); broadcast("packages:progress", { state: "removed" }); return st; });
+
 ipcMain.handle("open-app", (_event, id, files, tool) => {
   if (!APPS[id]) return false;
   const list = Array.isArray(files) ? files.filter((f) => f && typeof f.name === "string" && f.data) : [];
@@ -149,7 +163,7 @@ ipcMain.handle("open-app", (_event, id, files, tool) => {
 function buildMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate([
     { label: "File", submenu: [{ role: "close", label: "Close window" }, { role: "quit", label: "Quit PocketTool" }] },
-    { label: "Apps", submenu: Object.keys(APPS).map((id, i) => ({ label: APPS[id], accelerator: "CmdOrCtrl+" + (i + 1), click: () => openApp(id) })) },
+    ...(SOLO ? [] : [{ label: "Apps", submenu: Object.keys(APPS).map((id, i) => ({ label: APPS[id], accelerator: "CmdOrCtrl+" + (i + 1), click: () => openApp(id) })) }]),
     { role: "editMenu" },
     { label: "View", submenu: [{ role: "reload" }, { type: "separator" }, { role: "resetZoom" }, { role: "zoomIn" }, { role: "zoomOut" },
       { type: "separator" }, { role: "togglefullscreen" }, { role: "toggleDevTools" }] },
@@ -161,13 +175,19 @@ function buildMenu() {
           detail: "This frees about " + mb + " MB. The AI models and libraries bundled with PocketTool are not affected." });
         if (r.response === 0) { fs.rmSync(cacheDir, { recursive: true, force: true }); fs.mkdirSync(cacheDir, { recursive: true }); }
       } },
+      ...(SOLO ? [] : [{ label: "Extra packages…", click: () => {
+        const w = openApp("pockettool");
+        const show = () => w.webContents.executeJavaScript("window.PT && window.PT.packages && window.PT.packages.show()").catch(() => {});
+        if (w.webContents.isLoading()) w.webContents.once("did-finish-load", () => setTimeout(show, 400)); else show();
+      } }]),
       { label: "Check for updates…", click: () => {
         const w = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
         if (w) w.webContents.executeJavaScript("window.PT && window.PT.checkUpdates && window.PT.checkUpdates(true)").catch(() => {});
       } },
       { type: "separator" },
-      { label: "About PocketTool", click: () => dialog.showMessageBox({ message: "PocketTool " + app.getVersion(),
-        detail: "Everyday file tools that run on your computer.\n" + (fs.existsSync(path.join(OFFLINE_DIR, "hf")) ? "AI models are included, so everything works offline." : "AI models download the first time you use them.") }) }
+      { label: "About " + (SOLO ? APPS[SOLO] : "PocketTool"), click: () => dialog.showMessageBox({ message: (SOLO ? APPS[SOLO] : "PocketTool") + " " + app.getVersion(),
+        detail: SOLO ? "Part of the PocketTool family. Everything runs on your computer; your files are never uploaded."
+          : "Everyday file tools that run on your computer.\n" + (fs.existsSync(path.join(OFFLINE_DIR, "hf")) ? "AI models are included, so everything works offline." : "AI models can be downloaded from Help > Extra packages.") }) }
     ] }
   ]));
 }
@@ -178,6 +198,9 @@ app.on("second-instance", (_event, argv) => openApp(appFromArgs(argv)));
 
 app.whenReady().then(() => {
   cacheDir = path.join(app.getPath("userData"), "download-cache");
+  PACKAGES_DIR = path.join(app.getPath("userData"), "packages");
+  fs.mkdirSync(PACKAGES_DIR, { recursive: true });
+  pkgs = packages.createManager({ root: PACKAGES_DIR });
   fs.mkdirSync(cacheDir, { recursive: true });
   const appRoot = path.join(__dirname, "app");
   protocol.handle("app", (request) => {

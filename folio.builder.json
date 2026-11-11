@@ -1,0 +1,32 @@
+{
+  "appId": "com.pockettool.solo.folio",
+  "productName": "Folio",
+  "copyright": "Part of the PocketTool family",
+  "extraMetadata": {
+    "name": "folio",
+    "productName": "Folio",
+    "description": "Folio: PDF tools that run on your computer.",
+    "pocketSolo": "folio"
+  },
+  "files": ["main.js", "offline.js", "preload.js", "packages.js", "app/**/*", "package.json"],
+  "extraResources": [
+    { "from": "offline", "to": "offline", "filter": ["cdn/pdfjs-dist@*/**", "cdn/pdf-lib@*/**", "cdn/jszip@*/**", "cdn/heic2any@*/**", "fonts/**", "README.txt"] },
+    { "from": "build/app-icons", "to": "icons", "filter": ["folio.ico"] }
+  ],
+  "directories": { "output": "dist", "buildResources": "build" },
+  "win": {
+    "target": [{ "target": "nsis", "arch": ["x64"] }, { "target": "portable", "arch": ["x64"] }],
+    "icon": "build/app-icons/folio.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Folio",
+    "uninstallDisplayName": "Folio",
+    "artifactName": "Folio-Setup-${version}.exe"
+  },
+  "portable": { "artifactName": "Folio-${version}-portable.exe" }
+}
