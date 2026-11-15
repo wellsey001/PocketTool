@@ -1,5 +1,14 @@
 # Changes
 
+## 2.2.2
+
+- Fixed: Reel's tools stopped with "failed to import ffmpeg-core.js". The video engine now loads the build of its core that its worker expects (ESM), with the older build kept as a fallback. The desktop app bundles the ESM build.
+
+## 2.2.1
+
+- Fixed: the installer was still about 1.6 GB, because the build restored AI models saved from earlier builds and packed them in. The build no longer keeps them, the gather step deletes any leftovers, and the check step now stops a build that would include them.
+- Smaller still: only the one AI engine variant PocketTool uses is bundled, instead of every variant.
+
 ## 2.2.0
 
 - New: Folio on its own for Windows. Folio-Setup.exe installs just the PDF app as a standalone program, with its own Start menu entry, desktop shortcut, taskbar icon and settings. It includes only what Folio needs, so it's a small download.

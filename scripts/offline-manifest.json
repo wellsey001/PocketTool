@@ -74,16 +74,9 @@
         "\\.map$",
         "\\.cjs$",
         "node",
-        "\\.d\\.ts$"
+        "\\.d\\.ts$",
+        "^(?!.*jsep).*\\.wasm$"
       ]
-    },
-    {
-      "package": "onnxruntime-web",
-      "versionFrom": "@huggingface/transformers@3.5.1",
-      "include": [
-        "^/dist/[^/]+\\.(wasm|mjs)$"
-      ],
-      "optional": true
     },
     {
       "package": "@ffmpeg/ffmpeg",
@@ -97,8 +90,7 @@
       "package": "@ffmpeg/core",
       "version": "0.12.6",
       "include": [
-        "^/dist/umd/ffmpeg-core\\.js$",
-        "^/dist/umd/ffmpeg-core\\.wasm$"
+        "^/dist/esm/ffmpeg-core\\.(js|wasm)$"
       ]
     }
   ],

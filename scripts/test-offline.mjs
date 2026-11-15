@@ -30,8 +30,8 @@ const required = {
   "Background remover engine": J + "@huggingface/transformers@3.5.1",
   "Video engine": J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js",
   "Video engine worker": J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/814.ffmpeg.js",
-  "Video engine core": J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js",
-  "Video engine core (WebAssembly)": J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm"
+  "Video engine core": J + "@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.js",
+  "Video engine core (WebAssembly)": J + "@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.wasm"
 };
 for (const [name, url] of Object.entries(required)) { const f = has(url); f ? ok(name + "  (" + path.relative(OUT, f) + ")") : bad(name + "  " + url); }
 
@@ -47,7 +47,9 @@ weights ? ok("AI upscaler model weights") : bad("AI upscaler model weights (@ups
 
 const wasmDirs = list(cdn).filter((d) => /^(@huggingface[\\/]transformers|onnxruntime-web)@[^/\\]+$/.test(d));
 const wasm = wasmDirs.flatMap((d) => list(path.join(cdn, d)).filter((f) => f.endsWith(".wasm")).map((f) => path.basename(f)));
-wasm.length ? ok("AI engine files: " + [...new Set(wasm)].join(", ")) : bad("AI engine .wasm files (from @huggingface/transformers or onnxruntime-web)");
+wasm.length ? ok("AI engine files: " + [...new Set(wasm)].join(", ")) : warn("AI engine files not bundled; Remove background downloads them once, the first time it's used");
+// The AI models are offered as a download on first open, so they must never be in the installer
+if (fs.existsSync(path.join(OUT, "hf")) && !fs.existsSync(path.join(OUT, "FULL-BUILD"))) bad("AI models are in the offline folder and would make the installer about 1 GB bigger. Run \"npm run fetch\" (not fetch:full) to remove them");
 
 console.log("Fonts");
 const html = fs.readFileSync(path.join(ROOT, "app/index.html"), "utf8");

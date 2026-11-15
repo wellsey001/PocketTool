@@ -1,7 +1,7 @@
 {
   "name": "pockettool",
   "productName": "PocketTool",
-  "version": "2.2.0",
+  "version": "2.2.2",
   "description": "Everyday file tools that run on your computer: images, PDFs, video, audio and handy utilities, with nothing uploaded.",
   "main": "main.js",
   "author": {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="pockettool-version" content="2.2.0">
+<meta name="pockettool-version" content="2.2.2">
 <meta name="pockettool-repo" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PocketTool</title>
@@ -6864,8 +6864,12 @@
   var URLS = {
     main: J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js",
     worker: J + "@ffmpeg/ffmpeg@0.12.10/dist/umd/814.ffmpeg.js",
-    core: J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js",
-    wasm: J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm"
+    // The engine's worker runs as a module and loads the core with import(), so it needs the ESM build.
+    // The older UMD build is kept only as a fallback.
+    core: J + "@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.js",
+    wasm: J + "@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.wasm",
+    coreUmd: J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js",
+    wasmUmd: J + "@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm"
   };
   var MODES = { trim: "Trim video & audio", convert: "Convert video & audio", compress: "Compress video", gif: "Video to GIF", audio: "Extract audio" };
   var HINTS = { fast: "Instant, with no loss of quality. It cuts at the nearest key point in the video, so the start can be a second or two early.",
@@ -6900,15 +6904,25 @@
     status("Downloading the video engine…");
     S.loading = (window.FFmpegWASM ? Promise.resolve() : addScript(URLS.main)).then(function () {
       if (!window.FFmpegWASM || !window.FFmpegWASM.FFmpeg) throw new Error("the video engine didn’t load");
-      return Promise.all([blobURL(URLS.core, "text/javascript"),
-        blobURL(URLS.wasm, "application/wasm", function (g, t) { status("Downloading the video engine… " + (t ? Math.round(g / t * 100) + "% of " + PT.fmtSize(t) : PT.fmtSize(g))); $("mdProgFill").style.width = (t ? g / t * 100 : 0) + "%"; }),
-        blobURL(URLS.worker, "text/javascript")]);
-    }).then(function (u) {
-      var ff = new window.FFmpegWASM.FFmpeg();
-      ff.on("log", function (e) { S.logs.push(e.message); if (S.logs.length > 600) S.logs.splice(0, 200); onLog(e.message); });
-      ff.on("progress", function (e) { if (!S.timeSeen && e.progress >= 0 && e.progress <= 1) setProgress(e.progress); });
-      status("Starting the video engine…");
-      return ff.load({ coreURL: u[0], wasmURL: u[1], classWorkerURL: u[2] }).then(function () { S.ff = ff; S.written = null; return ff; });
+      var dl = function (g, t) { status("Downloading the video engine… " + (t ? Math.round(g / t * 100) + "% of " + PT.fmtSize(t) : PT.fmtSize(g))); $("mdProgFill").style.width = (t ? g / t * 100 : 0) + "%"; };
+      return blobURL(URLS.worker, "text/javascript").then(function (workerURL) {
+        function start(coreURL, wasmURL) {
+          return Promise.all([blobURL(coreURL, "text/javascript"), blobURL(wasmURL, "application/wasm", dl)]).then(function (u) {
+            var ff = new window.FFmpegWASM.FFmpeg();
+            ff.on("log", function (e) { S.logs.push(e.message); if (S.logs.length > 600) S.logs.splice(0, 200); onLog(e.message); });
+            ff.on("progress", function (e) { if (!S.timeSeen && e.progress >= 0 && e.progress <= 1) setProgress(e.progress); });
+            status("Starting the video engine…");
+            return ff.load({ coreURL: u[0], wasmURL: u[1], classWorkerURL: workerURL }).then(function () { return ff; }, function (e) {
+              try { ff.terminate(); } catch (x) {}
+              throw e;
+            });
+          });
+        }
+        return start(URLS.core, URLS.wasm).catch(function (e) {
+          console.warn("Video engine (ESM core) didn’t start, trying the UMD core", e);
+          return start(URLS.coreUmd, URLS.wasmUmd);
+        });
+      }).then(function (ff) { S.ff = ff; S.written = null; return ff; });
     }).catch(function (e) { S.loading = null; throw e; });
     return S.loading;
   }

@@ -106,14 +106,34 @@ for (const href of cssLinks) {
   }
 }
 
+function walkSize(dir) {
+  let n = 0;
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) { const f = path.join(dir, e.name); n += e.isDirectory() ? walkSize(f) : fs.statSync(f).size; }
+  return n;
+}
+
 // 3. AI models
 log("\nAI models");
-if (NO_MODELS) log("  skipped (--no-models). They will download the first time each AI tool is used.");
-else for (const m of manifest.models) {
-  log("  " + m.repo + ": " + m.about);
-  const rev = m.revision || "main";      // pinned versions download exactly the files the app was tested with
-  for (const f of m.files) await download("https://huggingface.co/" + m.repo + "/resolve/" + rev + "/" + f, path.join(OUT, "hf", m.repo, f));
-  for (const f of m.optional || []) await download("https://huggingface.co/" + m.repo + "/resolve/" + rev + "/" + f, path.join(OUT, "hf", m.repo, f), { optional: true });
+if (NO_MODELS) {
+  // Remove any models left from an earlier build (for example restored from GitHub's build cache),
+  // so they can never end up inside the installer by accident.
+  const hf = path.join(OUT, "hf");
+  if (fs.existsSync(hf)) {
+    const leftover = walkSize(hf);
+    fs.rmSync(hf, { recursive: true, force: true });
+    log("  removed " + mb(leftover) + " of AI models left from an earlier build");
+  }
+  fs.rmSync(path.join(OUT, "FULL-BUILD"), { force: true });
+  log("  not bundled (--no-models). The desktop app offers to download them on first open.");
+} else {
+  fs.mkdirSync(OUT, { recursive: true });
+  fs.writeFileSync(path.join(OUT, "FULL-BUILD"), "AI models bundled on purpose (npm run fetch:full)\n");
+  for (const m of manifest.models) {
+    log("  " + m.repo + ": " + m.about);
+    const rev = m.revision || "main";      // pinned versions download exactly the files the app was tested with
+    for (const f of m.files) await download("https://huggingface.co/" + m.repo + "/resolve/" + rev + "/" + f, path.join(OUT, "hf", m.repo, f));
+    for (const f of m.optional || []) await download("https://huggingface.co/" + m.repo + "/resolve/" + rev + "/" + f, path.join(OUT, "hf", m.repo, f), { optional: true });
+  }
 }
 
 // 4. Snapshots used when offline
@@ -121,5 +141,5 @@ log("\nOffline snapshots");
 for (const s of manifest.snapshots) await download(s.url, path.join(OUT, s.to), { optional: true });
 
 fs.writeFileSync(path.join(OUT, "README.txt"), "Files bundled with PocketTool so it works offline.\nCreated by scripts/fetch-offline.mjs on " + new Date().toISOString() + ". Safe to delete; run \"npm run fetch\" to recreate.\n");
-log("\nDone: " + mb(total) + " in the offline folder." + (problems ? " " + problems + " problem(s) above need fixing before you build." : ""));
+log("\nDone: " + mb(walkSize(OUT)) + " in the offline folder, all of which goes into the installer." + (problems ? " " + problems + " problem(s) above need fixing before you build." : ""));
 process.exit(problems ? 1 : 0);
